@@ -6,7 +6,7 @@ import {
   Search, CheckCircle2, Hourglass, X,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { StatusBadge, type StatusTone } from '@/components/ui/status-badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -38,13 +38,13 @@ const typeLabels: Record<string, string> = {
   CHAMBRE: 'Chambre', CONCESSION: 'Concession', IMMEUBLE: 'Immeuble',
 }
 
-const statusConfig: Record<string, { label: string; className: string }> = {
-  DRAFT: { label: 'Brouillon', className: 'bg-amber-100 text-amber-700' },
-  ACTIVE: { label: 'Actif', className: 'bg-green-100 text-green-700' },
-  PENDING_VERIFICATION: { label: 'En cours de vérification', className: 'bg-blue-100 text-blue-700' },
-  SUSPENDED: { label: 'Suspendu', className: 'bg-red-100 text-red-700' },
-  CLOSED: { label: 'Fermé', className: 'bg-neutral-100 text-neutral-600' },
-  RENTED: { label: 'Loué', className: 'bg-teal-100 text-teal-700' },
+const statusConfig: Record<string, { label: string; tone: StatusTone }> = {
+  DRAFT: { label: 'Brouillon', tone: 'warning' },
+  ACTIVE: { label: 'Actif', tone: 'success' },
+  PENDING_VERIFICATION: { label: 'En cours de vérification', tone: 'info' },
+  SUSPENDED: { label: 'Suspendu', tone: 'danger' },
+  CLOSED: { label: 'Fermé', tone: 'neutral' },
+  RENTED: { label: 'Loué', tone: 'info' },
 }
 
 const statCards = [
@@ -237,7 +237,7 @@ export function MyProperties() {
   }
 
   const renderPropertyRow = (p: PropertyItem) => {
-    const status = statusConfig[p.status] || { label: p.status, className: 'bg-neutral-100 text-neutral-600' }
+    const status = statusConfig[p.status] || { label: p.status, tone: 'neutral' as StatusTone }
     const isDraft = p.status === 'DRAFT'
     const canPublish = p.title && p.description && p.price > 0 && p.area > 0 && p.address && p.city
 
@@ -272,9 +272,7 @@ export function MyProperties() {
               <span className="font-semibold text-foreground text-sm sm:text-base truncate">
                 {p.title || 'Sans titre'}
               </span>
-              <Badge className={`shrink-0 text-[10px] px-2 py-0.5 ${status.className}`}>
-                {status.label}
-              </Badge>
+              <StatusBadge tone={status.tone} label={status.label} className="shrink-0 text-[10px] px-2 py-0.5" />
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground flex-wrap">
               <span className="truncate max-w-[120px] sm:max-w-none">{p.city || 'Ville'}{p.commune ? ` · ${p.commune}` : ''}</span>

@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { PropertyStatusBadge } from '@/components/ui/status-badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -605,21 +606,7 @@ export function SearchProperties() {
                             <Building2 className="size-8 text-neutral-300" />
                           </div>
                         )}
-                        <Badge
-                          className={`absolute top-3 left-3 border-0 text-xs font-semibold px-2 py-0.5 ${
-                            property.rentalStatus === 'disponible'
-                              ? 'bg-emerald-500 text-white'
-                              : property.rentalStatus === 'loue'
-                                ? 'bg-red-500 text-white'
-                                : 'bg-amber-500 text-white'
-                          }`}
-                        >
-                          {property.rentalStatus === 'disponible'
-                            ? 'Disponible'
-                            : property.rentalStatus === 'loue'
-                              ? 'Loué'
-                              : 'Réservé'}
-                        </Badge>
+                        <PropertyStatusBadge status={property.rentalStatus} className="absolute top-3 left-3 text-xs font-semibold px-2 py-0.5" />
                         {property.isVerified && (
                           <Badge className="absolute top-3 right-12 bg-brand-50 text-brand-600 border-brand-200 text-[10px] px-1.5 py-0 border">
                             Vérifié

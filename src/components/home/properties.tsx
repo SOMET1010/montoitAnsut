@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { MapPin, Heart, Eye, ShieldCheck, ArrowRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { PropertyStatusBadge } from '@/components/ui/status-badge'
 import { useAuthStore } from '@/lib/auth-store'
 import { useFavorites } from '@/lib/use-favorites'
 import { apiFetch } from '@/lib/capacitor'
@@ -98,21 +99,7 @@ function PropertyCard({ property, isFavorite, onToggleFavorite }: { property: Pr
         )}
         {/* Status + Meublé badges on image top-left */}
         <div className="absolute top-3 left-3 flex items-center gap-1.5">
-          <Badge
-            className={`border-0 text-xs font-semibold px-2.5 py-1 ${
-              property.rentalStatus === 'disponible'
-                ? 'bg-emerald-500 text-white'
-                : property.rentalStatus === 'loue'
-                  ? 'bg-red-500 text-white'
-                  : 'bg-amber-500 text-white'
-            }`}
-          >
-            {property.rentalStatus === 'disponible'
-              ? 'Disponible'
-              : property.rentalStatus === 'loue'
-                ? 'Loué'
-                : 'Réservé'}
-          </Badge>
+          <PropertyStatusBadge status={property.rentalStatus} className="text-xs font-semibold px-2.5 py-1" />
           {property.isFurnished && (
             <Badge className="bg-brand-500 text-white border-0 text-xs font-semibold px-2.5 py-1">
               Meublé

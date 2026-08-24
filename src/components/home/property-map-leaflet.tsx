@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MapPin, BedDouble, Maximize, BadgeCheck, ArrowRight, X, Star, Navigation, Loader2 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { PropertyStatusBadge } from '@/components/ui/status-badge'
 import { Button } from '@/components/ui/button'
 import { useGeolocation } from '@/hooks/capacitor/use-geolocation'
 
@@ -92,12 +93,6 @@ function formatMarkerPrice(price: number, zoom: number): string {
 // ── Popup Card ──────────────────────────────────────────────────────────────
 
 function LeafletPopupCard({ property, onVoirClick }: { property: MapProperty; onVoirClick: () => void }) {
-  const statusConfig: Record<PropertyStatus, { label: string; className: string }> = {
-    disponible: { label: 'Disponible', className: 'bg-emerald-500 text-white' },
-    loue: { label: 'Loué', className: 'bg-red-500 text-white' },
-    reserve: { label: 'Réservé', className: 'bg-amber-500 text-white' },
-  }
-
   const location = getMapPropertyLocation(property)
 
   return (
@@ -119,9 +114,7 @@ function LeafletPopupCard({ property, onVoirClick }: { property: MapProperty; on
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         <div className="absolute top-1.5 left-1.5 flex items-center gap-1">
-          <Badge className={`border-0 text-[9px] font-semibold px-1.5 py-0 ${statusConfig[property.rentalStatus].className}`}>
-            {statusConfig[property.rentalStatus].label}
-          </Badge>
+          <PropertyStatusBadge status={property.rentalStatus} className="text-[9px] font-semibold px-1.5 py-0" />
           {property.isFurnished && (
             <Badge className="border-0 text-[9px] font-medium px-1.5 py-0 bg-sky-500/90 text-white">
               Meublé
@@ -357,8 +350,10 @@ export default function PropertyMapLeaflet({ properties, onPropertyClick, userLo
 
       // Individual property marker: shows price with type icon
       const createPropertyIcon = (price: number, status: PropertyStatus, propertyType: string, zoom: number) => {
+        // Same semantic palette as PropertyStatusBadge (emerald/red/amber) —
+        // the marker and the popup badge must agree on what each status means.
         const color: Record<PropertyStatus, string> = {
-          disponible: '#FF6C2F',
+          disponible: '#10B981',
           loue: '#EF4444',
           reserve: '#F59E0B',
         }

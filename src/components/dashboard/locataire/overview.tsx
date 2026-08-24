@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { StatusBadge as SharedStatusBadge, type StatusTone } from '@/components/ui/status-badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuthStore } from '@/lib/auth-store'
@@ -72,32 +73,32 @@ const containerVariants = { hidden: { opacity: 0 }, show: { opacity: 1, transiti
 const itemVariants = { hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }
 
 function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { label: string; className: string }> = {
-    DRAFT: { label: 'Brouillon', className: 'bg-muted text-foreground' },
-    SUBMITTED: { label: 'Soumis', className: 'bg-amber-100 text-amber-700' },
-    TC_REVIEW: { label: 'En revue', className: 'bg-amber-100 text-amber-700' },
-    VALIDATED: { label: 'Validé', className: 'bg-green-100 text-green-700' },
-    REJECTED: { label: 'Rejeté', className: 'bg-red-100 text-red-700' },
-    PENDING: { label: 'En attente', className: 'bg-amber-100 text-amber-700' },
-    ACCEPTED: { label: 'Accepté', className: 'bg-green-100 text-green-700' },
-    COMPLETED: { label: 'Terminé', className: 'bg-teal-100 text-teal-700' },
-    ACTIVE: { label: 'Actif', className: 'bg-green-100 text-green-700' },
-    IN_PROGRESS: { label: 'En cours', className: 'bg-blue-100 text-blue-700' },
-    RESOLVED: { label: 'Résolu', className: 'bg-teal-100 text-teal-700' },
+  const config: Record<string, { label: string; tone: StatusTone }> = {
+    DRAFT: { label: 'Brouillon', tone: 'neutral' },
+    SUBMITTED: { label: 'Soumis', tone: 'warning' },
+    TC_REVIEW: { label: 'En revue', tone: 'warning' },
+    VALIDATED: { label: 'Validé', tone: 'success' },
+    REJECTED: { label: 'Rejeté', tone: 'danger' },
+    PENDING: { label: 'En attente', tone: 'warning' },
+    ACCEPTED: { label: 'Accepté', tone: 'success' },
+    COMPLETED: { label: 'Terminé', tone: 'info' },
+    ACTIVE: { label: 'Actif', tone: 'success' },
+    IN_PROGRESS: { label: 'En cours', tone: 'info' },
+    RESOLVED: { label: 'Résolu', tone: 'info' },
   }
-  const c = config[status] || { label: status, className: 'bg-muted text-foreground' }
-  return <Badge className={c.className}>{c.label}</Badge>
+  const c = config[status] || { label: status, tone: 'neutral' as StatusTone }
+  return <SharedStatusBadge tone={c.tone} label={c.label} />
 }
 
 function PriorityBadge({ priority }: { priority: string }) {
-  const config: Record<string, { label: string; className: string }> = {
-    LOW: { label: 'Basse', className: 'bg-gray-100 text-gray-600' },
-    MEDIUM: { label: 'Moyenne', className: 'bg-amber-100 text-amber-700' },
-    HIGH: { label: 'Haute', className: 'bg-orange-100 text-orange-700' },
-    URGENT: { label: 'Urgente', className: 'bg-red-100 text-red-700' },
+  const config: Record<string, { label: string; tone: StatusTone }> = {
+    LOW: { label: 'Basse', tone: 'neutral' },
+    MEDIUM: { label: 'Moyenne', tone: 'warning' },
+    HIGH: { label: 'Haute', tone: 'warning' },
+    URGENT: { label: 'Urgente', tone: 'danger' },
   }
-  const c = config[priority] || { label: priority, className: 'bg-muted text-foreground' }
-  return <Badge className={c.className}>{c.label}</Badge>
+  const c = config[priority] || { label: priority, tone: 'neutral' as StatusTone }
+  return <SharedStatusBadge tone={c.tone} label={c.label} />
 }
 
 function PaymentStatusIndicator({ status }: { status: 'up_to_date' | 'late' | 'pending' }) {
