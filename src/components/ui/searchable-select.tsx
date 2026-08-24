@@ -18,6 +18,7 @@ interface SearchableSelectProps {
   className?: string
   disabled?: boolean
   triggerClassName?: string
+  id?: string
 }
 
 export function SearchableSelect({
@@ -29,6 +30,7 @@ export function SearchableSelect({
   className,
   triggerClassName,
   disabled = false,
+  id,
 }: SearchableSelectProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -63,6 +65,7 @@ export function SearchableSelect({
   return (
     <div ref={containerRef} className={cn('relative', className)}>
       <button
+        id={id}
         type="button"
         onClick={() => { if (!disabled) setOpen(!open) }}
         disabled={disabled}

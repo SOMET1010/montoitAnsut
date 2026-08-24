@@ -143,7 +143,9 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
     try {
       const result = await authFetch<ScoringData>('/api/scoring')
       setScoring(result)
-    } catch {}
+    } catch {
+      toast.error('Impossible de charger votre score de vérification')
+    }
   }, [])
 
   useEffect(() => {
@@ -290,7 +292,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
       setNotifLoading(true)
       authFetch<{ preferences: NotificationPreferences }>('/api/user/notification-preferences')
         .then((data) => setNotifPrefs(data.preferences))
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger vos préférences de notification'))
         .finally(() => setNotifLoading(false))
     }
   }, [activeTab, user])
@@ -703,9 +705,9 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                 {/* Gender & City */}
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground">Genre</Label>
+                    <Label htmlFor="owner-gender" className="text-xs font-medium text-foreground">Genre</Label>
                     <Select value={profileForm.gender} onValueChange={(v) => setProfileForm((prev) => ({ ...prev, gender: v }))}>
-                      <SelectTrigger className="h-9 text-sm w-full"><SelectValue placeholder="Non renseigné" /></SelectTrigger>
+                      <SelectTrigger id="owner-gender" className="h-9 text-sm w-full"><SelectValue placeholder="Non renseigné" /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="HOMME">Homme</SelectItem>
                         <SelectItem value="FEMME">Femme</SelectItem>
@@ -713,8 +715,9 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                     </Select>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground">Ville</Label>
+                    <Label htmlFor="owner-city" className="text-xs font-medium text-foreground">Ville</Label>
                     <SearchableSelect
+                      id="owner-city"
                       options={CITIES.map((c) => ({ value: c.name, label: c.name }))}
                       value={profileForm.city}
                       onChange={(v) => setProfileForm((prev) => ({ ...prev, city: v }))}
@@ -816,7 +819,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
 
                   {/* Email */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                    <Label htmlFor="owner-email" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <Mail className="size-3" /> Email
                       {profile?.isEmailVerified && emailValue.trim() === (profile?.email || '').trim() && (
                         <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[9px] px-1 py-0 border">
@@ -826,6 +829,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                     </Label>
                     <div className="flex gap-2">
                       <Input
+                        id="owner-email"
                         value={emailValue}
                         onChange={(e) => {
                           setEmailValue(e.target.value)

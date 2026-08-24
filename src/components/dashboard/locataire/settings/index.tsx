@@ -29,6 +29,7 @@ import type { RentalFileItem } from '@/components/dashboard/locataire/rental-fil
 import { ScoreCircle, ScoreComponentCard } from './sub-components'
 import { KycVerificationModal } from '@/components/dashboard/locataire/settings/kyc-modal'
 import { validateEmail, validatePhoneCI } from '@/lib/validators'
+import { toast } from 'sonner'
 
 
 // ── Animations ──────────────────────────────────────────────────────────────
@@ -221,7 +222,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
       setSessionsLoading(true)
       authFetch<{ sessions: SessionInfo[] }>('/api/settings/sessions')
         .then((data) => setSessions(data.sessions))
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger les sessions actives'))
         .finally(() => setSessionsLoading(false))
     }
   }, [activeTab, user])
@@ -232,7 +233,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
       setNotifLoading(true)
       authFetch<{ preferences: NotificationPreferences }>('/api/settings/notifications')
         .then((data) => setNotifPrefs(data.preferences))
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger vos préférences de notification'))
         .finally(() => setNotifLoading(false))
     }
   }, [activeTab, user])
@@ -305,7 +306,10 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
     try {
       await authFetch('/api/settings/sessions', { method: 'DELETE' })
       setSessions((prev) => prev.filter((s) => s.isCurrent))
-    } catch {} finally {
+      toast.success('Autres sessions déconnectées')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erreur lors de la déconnexion des autres sessions')
+    } finally {
       setRevokingSessions(false)
     }
   }, [])
@@ -321,7 +325,9 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
         body: JSON.stringify({ [key]: value }),
       })
       setNotifPrefs((prev) => prev ? { ...prev, [key]: value } : prev)
-    } catch {} finally {
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la préférence')
+    } finally {
       setNotifSaving((prev) => ({ ...prev, [key]: false }))
     }
   }, [])
@@ -1149,14 +1155,14 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                 <div className="grid gap-4 sm:grid-cols-2">
                   {/* Gender */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                    <Label htmlFor="gender" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <Users className="size-3" /> Genre
                     </Label>
                     <Select
                       value={formState.gender || '_empty'}
                       onValueChange={(val) => setFormState((prev) => ({ ...prev, gender: val === '_empty' ? '' : val }))}
                     >
-                      <SelectTrigger className="h-9 text-sm w-full">
+                      <SelectTrigger id="gender" className="h-9 text-sm w-full">
                         <SelectValue placeholder="Sélectionnez" />
                       </SelectTrigger>
                       <SelectContent>
@@ -1170,10 +1176,11 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
 
                   {/* City */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                    <Label htmlFor="city" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <MapPin className="size-3" /> Ville
                     </Label>
                     <SearchableSelect
+                      id="city"
                       options={CITIES.map((c) => ({ value: c.name, label: c.name }))}
                       value={formState.city}
                       onChange={(v) => setFormState((prev) => ({ ...prev, city: v }))}
@@ -1258,7 +1265,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
 
                   {/* Email */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                    <Label htmlFor="email" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <Mail className="size-3" /> Email
                       {profile?.isEmailVerified && (
                         <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[9px] px-1 py-0 border">
@@ -1268,6 +1275,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                     </Label>
                     <div className="flex gap-2">
                       <Input
+                        id="email"
                         value={emailValue}
                         onChange={(e) => {
                           setEmailValue(e.target.value)

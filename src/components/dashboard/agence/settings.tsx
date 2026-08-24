@@ -169,7 +169,9 @@ export function AgenceSettings() {
         email: p.email || user?.email || '',
         phone: p.phone || user?.phone || '',
       })
-    } catch {}
+    } catch {
+      toast.error('Impossible de charger votre profil')
+    }
     setLoading(false)
   }, [user])
 
@@ -185,7 +187,9 @@ export function AgenceSettings() {
           type: data.settings.commissionType || 'PERCENTAGE',
         })
       }
-    } catch {}
+    } catch {
+      toast.error('Impossible de charger les paramètres de commission')
+    }
   }, [])
 
   // Fetch notification preferences when tab changes
@@ -204,7 +208,7 @@ export function AgenceSettings() {
             })
           }
         })
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger vos préférences de notification'))
         .finally(() => setNotifLoading(false))
     }
   }, [activeTab, user])

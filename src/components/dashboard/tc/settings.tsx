@@ -20,6 +20,7 @@ import { useAuthStore } from '@/lib/auth-store'
 import { authFetch } from '@/lib/auth-fetch'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ActivityHistory } from '@/components/dashboard/locataire/history'
+import { toast } from 'sonner'
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -176,7 +177,7 @@ export function TcSettings() {
       setSessionsLoading(true)
       authFetch<{ sessions: SessionInfo[] }>('/api/settings/sessions')
         .then((data) => setSessions(data.sessions))
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger les sessions actives'))
         .finally(() => setSessionsLoading(false))
     }
   }, [activeTab, user])
@@ -187,7 +188,7 @@ export function TcSettings() {
       setNotifLoading(true)
       authFetch<{ preferences: NotificationPreferences }>('/api/settings/notifications')
         .then((data) => setNotifPrefs(data.preferences))
-        .catch(() => {})
+        .catch(() => toast.error('Impossible de charger vos préférences de notification'))
         .finally(() => setNotifLoading(false))
     }
   }, [activeTab, user])
@@ -238,7 +239,10 @@ export function TcSettings() {
     try {
       await authFetch('/api/settings/sessions', { method: 'DELETE' })
       setSessions((prev) => prev.filter((s) => s.isCurrent))
-    } catch {} finally {
+      toast.success('Autres sessions déconnectées')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erreur lors de la déconnexion des autres sessions')
+    } finally {
       setRevokingSessions(false)
     }
   }, [])
@@ -254,7 +258,9 @@ export function TcSettings() {
         body: JSON.stringify({ [key]: value }),
       })
       setNotifPrefs((prev) => prev ? { ...prev, [key]: value } : prev)
-    } catch {} finally {
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Erreur lors de la mise à jour de la préférence')
+    } finally {
       setNotifSaving((prev) => ({ ...prev, [key]: false }))
     }
   }, [])
@@ -720,14 +726,14 @@ export function TcSettings() {
                   </div>
                   {/* Gender */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                    <Label htmlFor="tc-gender" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                       <Users className="size-3" /> Genre
                     </Label>
                     <Select
                       value={formState.gender || '_empty'}
                       onValueChange={(val) => setFormState((prev) => ({ ...prev, gender: val === '_empty' ? '' : val }))}
                     >
-                      <SelectTrigger className="h-9 text-sm w-full">
+                      <SelectTrigger id="tc-gender" className="h-9 text-sm w-full">
                         <SelectValue placeholder="Sélectionnez" />
                       </SelectTrigger>
                       <SelectContent>
@@ -758,7 +764,7 @@ export function TcSettings() {
 
                 {/* Email (editable with verification) */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-foreground flex items-center gap-1.5">
+                  <Label htmlFor="tc-email" className="text-xs font-medium text-foreground flex items-center gap-1.5">
                     <Mail className="size-3" /> Email
                     {profile?.isEmailVerified && (
                       <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-[9px] px-1 py-0 border">
@@ -767,6 +773,7 @@ export function TcSettings() {
                     )}
                   </Label>
                   <Input
+                    id="tc-email"
                     value={emailFormValue}
                     onChange={(e) => setEmailFormValue(e.target.value)}
                     placeholder={profile?.email || user?.email || 'Votre email'}
@@ -1024,7 +1031,9 @@ export function TcSettings() {
                                   body: JSON.stringify({ sessionIds: [session.id] }),
                                 })
                                 setSessions((prev) => prev.filter((s) => s.id !== session.id))
-                              } catch {}
+                              } catch (err) {
+                                toast.error(err instanceof Error ? err.message : 'Erreur lors de la révocation de la session')
+                              }
                             }}
                           >
                             <Trash2 className="size-3 mr-1" />
@@ -1053,9 +1062,10 @@ export function TcSettings() {
                 <div className="space-y-4 py-2">
                   {/* Current password */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground">Mot de passe actuel</Label>
+                    <Label htmlFor="tc-currentPassword" className="text-xs font-medium text-foreground">Mot de passe actuel</Label>
                     <div className="relative">
                       <Input
+                        id="tc-currentPassword"
                         type={showCurrentPassword ? 'text' : 'password'}
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
@@ -1074,9 +1084,10 @@ export function TcSettings() {
                   <Separator />
                   {/* New password */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground">Nouveau mot de passe</Label>
+                    <Label htmlFor="tc-newPassword" className="text-xs font-medium text-foreground">Nouveau mot de passe</Label>
                     <div className="relative">
                       <Input
+                        id="tc-newPassword"
                         type={showNewPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={(e) => setNewPassword(e.target.value)}
@@ -1111,8 +1122,9 @@ export function TcSettings() {
                   </div>
                   {/* Confirm password */}
                   <div className="space-y-1.5">
-                    <Label className="text-xs font-medium text-foreground">Confirmer le nouveau mot de passe</Label>
+                    <Label htmlFor="tc-confirmPassword" className="text-xs font-medium text-foreground">Confirmer le nouveau mot de passe</Label>
                     <Input
+                      id="tc-confirmPassword"
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
