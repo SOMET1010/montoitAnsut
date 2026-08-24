@@ -325,7 +325,7 @@ export function SutaChatbot() {
             exit={{ scale: 0, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 20 }}
             onClick={() => setIsOpen(true)}
-            className="fixed bottom-24 right-4 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-[#FF6C2F] p-1 shadow-lg shadow-[#FF6C2F]/30 hover:shadow-xl hover:shadow-[#FF6C2F]/40 transition-shadow sm:bottom-6 sm:right-6"
+            className="fixed bottom-24 right-4 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 p-1 shadow-lg shadow-brand-500/30 hover:shadow-xl hover:shadow-brand-500/40 transition-shadow sm:bottom-6 sm:right-6"
             style={{
               transform: `translate(${position.x}px, ${position.y}px)`,
             }}
@@ -355,14 +355,14 @@ export function SutaChatbot() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             ref={chatPanelRef}
-            className="fixed inset-2 z-50 flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl sm:inset-auto sm:bottom-4 sm:right-4 sm:top-auto sm:left-auto sm:h-auto sm:w-[380px]"
+            className="fixed inset-2 z-50 flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-2xl sm:inset-auto sm:bottom-4 sm:right-4 sm:top-auto sm:left-auto sm:h-auto sm:w-[380px]"
             style={{
               transform: `translate(${position.x}px, ${position.y}px)`,
             }}
           >
             {/* Header */}
             <div
-              className="flex items-center gap-2.5 border-b border-white/10 bg-[#FF6C2F] px-3 py-2.5 text-white sm:gap-3 sm:px-4 sm:py-3 cursor-move select-none touch-none"
+              className="flex items-center gap-2.5 border-b border-white/10 bg-brand-500 px-3 py-2.5 text-white sm:gap-3 sm:px-4 sm:py-3 cursor-move select-none touch-none"
               onPointerDown={handlePointerDown}
             >
               <GripVertical className="h-4 w-4 text-white/60 flex-shrink-0 hidden sm:block" />
@@ -372,7 +372,7 @@ export function SutaChatbot() {
                   alt="SUTA"
                   className="h-9 w-9 rounded-full border-2 border-white/30 object-cover sm:h-10 sm:w-10"
                 />
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-[#FF6C2F] bg-green-400 sm:h-3 sm:w-3" />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-brand-500 bg-green-400 sm:h-3 sm:w-3" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-sm leading-tight sm:text-base">SUTA</h3>
@@ -421,8 +421,8 @@ export function SutaChatbot() {
                         />
                       </div>
                     ) : (
-                      <div className="flex-shrink-0 h-7 w-7 rounded-full bg-neutral-200 flex items-center justify-center sm:h-8 sm:w-8">
-                        <span className="text-[10px] font-medium text-neutral-600 sm:text-xs">Vous</span>
+                      <div className="flex-shrink-0 h-7 w-7 rounded-full bg-muted flex items-center justify-center sm:h-8 sm:w-8">
+                        <span className="text-[10px] font-medium text-muted-foreground sm:text-xs">Vous</span>
                       </div>
                     )}
 
@@ -431,8 +431,8 @@ export function SutaChatbot() {
                       <div
                         className={`rounded-2xl px-3 py-2 text-[13px] leading-relaxed sm:px-4 sm:py-2.5 sm:text-sm ${
                           msg.role === 'user'
-                            ? 'bg-[#FF6C2F] text-white rounded-tr-sm'
-                            : 'bg-neutral-100 text-neutral-800 rounded-tl-sm'
+                            ? 'bg-brand-500 text-white rounded-tr-sm'
+                            : 'bg-muted text-foreground rounded-tl-sm'
                         }`}
                       >
                         <div className="whitespace-pre-wrap break-words">
@@ -450,12 +450,12 @@ export function SutaChatbot() {
                         <button
                           onClick={() => playMessageAudio(msg)}
                           disabled={ttsLoadingMsgId === msg.id}
-                          className="flex items-center gap-1 text-[10.5px] text-neutral-400 hover:text-[#FF6C2F] transition-colors px-1"
+                          className="flex items-center gap-1 text-[10.5px] text-muted-foreground hover:text-brand-500 transition-colors px-1"
                         >
                           {ttsLoadingMsgId === msg.id ? (
                             <Loader2 className="h-2.5 w-2.5 animate-spin" />
                           ) : (
-                            <Volume2 className={`h-2.5 w-2.5 ${playingMsgId === msg.id ? 'text-[#FF6C2F]' : ''}`} />
+                            <Volume2 className={`h-2.5 w-2.5 ${playingMsgId === msg.id ? 'text-brand-500' : ''}`} />
                           )}
                           {playingMsgId === msg.id ? 'Lecture...' : 'Écouter'}
                         </button>
@@ -463,11 +463,11 @@ export function SutaChatbot() {
 
                       {/* Map image (Azure Maps) */}
                       {msg.mapImage && (
-                        <div className="w-full overflow-hidden rounded-xl border border-neutral-200">
+                        <div className="w-full overflow-hidden rounded-xl border border-border">
                           <img src={msg.mapImage} alt={msg.mapLabel || 'Carte'} className="w-full h-auto" />
                           {msg.mapLabel && (
-                            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-neutral-50 text-[11px] text-neutral-600">
-                              <MapPin className="h-3 w-3 text-[#FF6C2F]" />
+                            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-muted text-[11px] text-muted-foreground">
+                              <MapPin className="h-3 w-3 text-brand-500" />
                               {msg.mapLabel}
                             </div>
                           )}
@@ -485,28 +485,28 @@ export function SutaChatbot() {
                                 setView('property-detail')
                                 setIsOpen(false)
                               }}
-                              className="flex w-full items-center gap-2.5 rounded-xl border border-neutral-200 bg-white p-2 text-left hover:border-[#FF6C2F]/40 hover:bg-[#FF6C2F]/5 transition-colors"
+                              className="flex w-full items-center gap-2.5 rounded-xl border border-border bg-card p-2 text-left hover:border-brand-500/40 hover:bg-brand-500/5 transition-colors"
                             >
-                              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-muted">
                                 {p.image ? (
                                   <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
                                 ) : (
-                                  <div className="flex h-full w-full items-center justify-center text-neutral-300">
+                                  <div className="flex h-full w-full items-center justify-center text-muted-foreground">
                                     <MapPin className="h-4 w-4" />
                                   </div>
                                 )}
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="truncate text-[12px] font-semibold text-neutral-800">{p.title}</p>
-                                <div className="flex items-center gap-1.5 text-[10.5px] text-neutral-500">
+                                <p className="truncate text-[12px] font-semibold text-foreground">{p.title}</p>
+                                <div className="flex items-center gap-1.5 text-[10.5px] text-muted-foreground">
                                   <span className="truncate">{p.commune || p.city}</span>
                                   {p.bedrooms !== null && (
                                     <span className="flex items-center gap-0.5 shrink-0"><BedDouble className="h-2.5 w-2.5" />{p.bedrooms}</span>
                                   )}
                                 </div>
-                                <p className="text-[11px] font-bold text-[#FF6C2F]">{p.price.toLocaleString('fr-FR')} F/mois</p>
+                                <p className="text-[11px] font-bold text-brand-500">{p.price.toLocaleString('fr-FR')} F/mois</p>
                               </div>
-                              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-neutral-300" />
+                              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                             </button>
                           ))}
                         </div>
@@ -523,11 +523,11 @@ export function SutaChatbot() {
                       alt="SUTA"
                       className="h-7 w-7 rounded-full object-cover flex-shrink-0 sm:h-8 sm:w-8"
                     />
-                    <div className="bg-neutral-100 rounded-2xl rounded-tl-sm px-3 py-2.5 sm:px-4 sm:py-3">
+                    <div className="bg-muted rounded-2xl rounded-tl-sm px-3 py-2.5 sm:px-4 sm:py-3">
                       <div className="flex gap-1 sm:gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-400 animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '0ms' }} />
-                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-400 animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '150ms' }} />
-                        <span className="h-1.5 w-1.5 rounded-full bg-neutral-400 animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '300ms' }} />
+                        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '0ms' }} />
+                        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '150ms' }} />
+                        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-bounce sm:h-2 sm:w-2" style={{ animationDelay: '300ms' }} />
                       </div>
                     </div>
                   </div>
@@ -537,12 +537,12 @@ export function SutaChatbot() {
               {/* Suggestions */}
               {showSuggestions && messages.length <= 1 && (
                 <div className="mt-3 space-y-1.5 sm:mt-4 sm:space-y-2">
-                  <p className="text-[11px] text-neutral-500 font-medium px-0.5 sm:text-xs">Suggestions :</p>
+                  <p className="text-[11px] text-muted-foreground font-medium px-0.5 sm:text-xs">Suggestions :</p>
                   {SUGGESTIONS.map((suggestion) => (
                     <button
                       key={suggestion}
                       onClick={() => sendMessage(suggestion)}
-                      className="w-full text-left rounded-xl border border-neutral-200 bg-white px-2.5 py-1.5 text-[13px] text-neutral-700 hover:border-[#FF6C2F]/40 hover:bg-[#FF6C2F]/5 transition-colors sm:px-3 sm:py-2 sm:text-sm"
+                      className="w-full text-left rounded-xl border border-border bg-card px-2.5 py-1.5 text-[13px] text-foreground hover:border-brand-500/40 hover:bg-brand-500/5 transition-colors sm:px-3 sm:py-2 sm:text-sm"
                     >
                       {suggestion}
                     </button>
@@ -552,7 +552,7 @@ export function SutaChatbot() {
             </ScrollArea>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="border-t border-neutral-200 px-3 py-2 sm:px-4 sm:py-3">
+            <form onSubmit={handleSubmit} className="border-t border-border px-3 py-2 sm:px-4 sm:py-3">
               <div className="flex items-center gap-2">
                 <Input
                   ref={inputRef}
@@ -560,7 +560,7 @@ export function SutaChatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   placeholder={isRecording ? 'Je t\'écoute...' : isTranscribing ? 'Transcription...' : 'Posez votre question...'}
                   disabled={isLoading || isRecording || isTranscribing}
-                  className="flex-1 rounded-full border-neutral-200 bg-neutral-50 text-[13px] focus:border-[#FF6C2F] focus:ring-[#FF6C2F]/20 sm:text-sm"
+                  className="flex-1 rounded-full border-border bg-muted text-[13px] focus:border-brand-500 focus:ring-brand-500/20 sm:text-sm"
                 />
                 <Button
                   type="button"
@@ -571,7 +571,7 @@ export function SutaChatbot() {
                   className={`h-9 w-9 rounded-full flex-shrink-0 sm:h-10 sm:w-10 ${
                     isRecording
                       ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
-                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600'
+                      : 'bg-muted hover:bg-accent text-muted-foreground'
                   }`}
                 >
                   {isTranscribing ? (
@@ -586,7 +586,7 @@ export function SutaChatbot() {
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || isLoading}
-                  className="h-9 w-9 rounded-full bg-[#FF6C2F] hover:bg-[#e85f26] text-white flex-shrink-0 sm:h-10 sm:w-10"
+                  className="h-9 w-9 rounded-full bg-brand-500 hover:bg-brand-600 text-white flex-shrink-0 sm:h-10 sm:w-10"
                 >
                   <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </Button>
