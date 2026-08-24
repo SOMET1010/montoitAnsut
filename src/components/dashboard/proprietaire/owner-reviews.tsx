@@ -512,7 +512,7 @@ export function OwnerReviews() {
 
                         <Button
                           size="sm"
-                          className="gap-1.5 bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                          className="gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                           onClick={() => {
                             setSelectedLease(lease)
                             setRatingScore(0)
@@ -569,7 +569,7 @@ export function OwnerReviews() {
             <Button
               onClick={handleReply}
               disabled={replying || !replyText.trim()}
-              className="gap-2 bg-brand-500 hover:bg-brand-600 text-white disabled:opacity-50"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
             >
               {replying ? 'Envoi...' : (
                 <>
@@ -674,7 +674,7 @@ export function OwnerReviews() {
             <Button
               onClick={handleSubmitReview}
               disabled={submitting || ratingScore === 0}
-              className="gap-2 bg-brand-500 hover:bg-brand-600 text-white disabled:opacity-50"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
             >
               {submitting ? 'Envoi...' : 'Envoyer l\'avis'}
             </Button>

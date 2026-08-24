@@ -290,7 +290,7 @@ export function Reviews() {
           </div>
           <Button
             onClick={() => setShowReviewDialog(true)}
-            className="gap-2 bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+            className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
           >
             <Plus className="size-4" />
             <span className="hidden sm:inline">Laisser un avis</span>
@@ -545,7 +545,7 @@ export function Reviews() {
             <Button
               onClick={handleSubmitReview}
               disabled={submitting || !selectedLeaseId || ratingScore === 0}
-              className="gap-2 bg-brand-500 hover:bg-brand-600 text-white disabled:opacity-50"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50"
             >
               {submitting ? 'Envoi...' : 'Envoyer l\'avis'}
             </Button>

@@ -547,7 +547,7 @@ export function RentalFilesQueue({ showHeaderAndStats = true }: { showHeaderAndS
               className={cn(
                 'gap-1.5',
                 statusFilter === 'ALL'
-                  ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                  ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
               )}
               onClick={() => setStatusFilter('ALL')}
@@ -563,7 +563,7 @@ export function RentalFilesQueue({ showHeaderAndStats = true }: { showHeaderAndS
                 className={cn(
                   'gap-1.5',
                   statusFilter === s
-                    ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                     : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
                 )}
                 onClick={() => setStatusFilter(s)}
@@ -861,7 +861,7 @@ export function RentalFilesQueue({ showHeaderAndStats = true }: { showHeaderAndS
                       {rf.onHold && (
                         <Button
                           size="sm"
-                          className="bg-brand-500 hover:bg-brand-600 text-white gap-1"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
                           onClick={() => handleResume(rf.id)}
                         >
                           <Play className="size-3.5" /> Reprendre
@@ -1195,7 +1195,7 @@ export function RentalFilesQueue({ showHeaderAndStats = true }: { showHeaderAndS
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={!dialogComment.trim()}
               onClick={handleRequestInfoConfirm}
             >

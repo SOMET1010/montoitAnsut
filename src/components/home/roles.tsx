@@ -193,7 +193,7 @@ function RoleModal({
         <div className="px-4 sm:px-6 pb-4 sm:pb-6 flex flex-col gap-2 sm:gap-2.5">
           <Button
             onClick={handleRegister}
-            className="w-full h-10 sm:h-11 bg-brand-500 hover:bg-brand-600 text-white font-semibold text-sm sm:text-base"
+            className="w-full h-10 sm:h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm sm:text-base"
           >
             Créer un compte {role.title}
             <ArrowRight className="size-3.5 sm:size-4 ml-2" />

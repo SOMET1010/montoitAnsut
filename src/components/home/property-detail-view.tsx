@@ -306,7 +306,7 @@ function AuthGateDialog({
         </DialogHeader>
         <div className="flex flex-col gap-3 mt-4">
           <Button
-            className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold"
             onClick={() => { onOpenChange(false); setView('login') }}
           >
             Se connecter
@@ -1225,7 +1225,7 @@ export function PropertyDetailView({ propertyId }: { propertyId: string }) {
                 {!isRented && (
                   <>
                     <Button
-                      className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold mb-2"
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold mb-2"
                       onClick={() => requireAuth('planifier une visite', () => setVisitModalOpen(true))}
                     >
                       <Calendar className="size-4 mr-1.5" />
@@ -1336,7 +1336,7 @@ export function PropertyDetailView({ propertyId }: { propertyId: string }) {
             {!isRented && (
               <>
                 <Button
-                  className="bg-brand-500 hover:bg-brand-600 text-white h-11 min-w-[5.5rem] text-sm font-semibold shadow-sm"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground h-11 min-w-[5.5rem] text-sm font-semibold shadow-sm"
                   onClick={() => requireAuth('planifier une visite', () => setVisitModalOpen(true))}
                 >
                   <Calendar className="size-4 mr-1.5" />
@@ -1687,7 +1687,7 @@ function ContactTab({
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold"
               onClick={() => { if (!isAuthenticated) { setView('login'); return; } }}
             >
               <Phone className="size-4 mr-1.5" />
@@ -1738,7 +1738,7 @@ function ContactTab({
             </div>
             <Button
               onClick={() => setView('login')}
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-10 text-sm font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-10 text-sm font-semibold"
             >
               <LogIn className="size-4 mr-1.5" />
               Se connecter
@@ -1765,7 +1765,7 @@ function ContactTab({
             </div>
             <Button
               onClick={handleSendMessage}
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-10 text-sm font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-10 text-sm font-semibold"
               disabled={!message.trim() || sending}
             >
               {sending ? (
@@ -1999,7 +1999,7 @@ function VisitModal({
 
             {/* Submit */}
             <Button
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold"
               disabled={!visitDate || !visitTime || submitting}
               onClick={handleSubmit}
             >
@@ -2057,7 +2057,7 @@ function ReviewsTab({ avgRating, reviews, totalReviews, propertyId, ownerId }: {
           {canReview && (
             <Button
               onClick={() => setReviewDialogOpen(true)}
-              className="mt-4 bg-brand-500 hover:bg-brand-600 text-white h-10 text-sm font-semibold"
+              className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground h-10 text-sm font-semibold"
             >
               <Star className="size-4 mr-1.5" />
               Donner un avis
@@ -2330,7 +2330,7 @@ function ReviewDialog({
             <Button
               onClick={handleSubmit}
               disabled={score < 1 || submitting}
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold"
             >
               {submitting ? (
                 <span className="flex items-center gap-2">
@@ -2467,7 +2467,7 @@ function ApplyDialog({
             <div className="flex gap-2 mt-4">
               {!dossierIncomplete && (
                 <Button
-                  className="flex-1 bg-brand-500 hover:bg-brand-600 text-white"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={handleClose}
                 >
                   Fermer
@@ -2490,7 +2490,7 @@ function ApplyDialog({
               <p className="text-xs text-red-500 text-center mb-4">{submitError}</p>
             )}
             <Button
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11 text-sm font-semibold"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground h-11 text-sm font-semibold"
               disabled={submitting}
               onClick={handleSubmit}
             >

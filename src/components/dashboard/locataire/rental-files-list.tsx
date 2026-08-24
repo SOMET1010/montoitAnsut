@@ -132,7 +132,7 @@ export function RentalFilesList() {
           </div>
           {files.filter((f) => f.status === 'DRAFT').length === 0 && (
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shrink-0"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shrink-0"
               onClick={handleCreateNewDraft}
               disabled={creating}
             >
@@ -168,7 +168,7 @@ export function RentalFilesList() {
               Créez votre premier dossier pour commencer à postuler aux annonces
             </p>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               onClick={handleCreateNewDraft}
               disabled={creating}
             >

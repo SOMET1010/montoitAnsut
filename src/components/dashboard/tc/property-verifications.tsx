@@ -413,7 +413,7 @@ export function PropertyVerifications() {
                       <div className="flex gap-2 mt-3">
                         <Button
                           size="sm"
-                          className="bg-brand-500 hover:bg-brand-600 text-white gap-1 flex-1"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 flex-1"
                           onClick={() => handleVerify(property.id)}
                           disabled={actionLoading === property.id}
                         >
@@ -537,7 +537,7 @@ export function PropertyVerifications() {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="bg-brand-500 hover:bg-brand-600 text-white h-8 px-3 text-xs"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 px-3 text-xs"
                             onClick={(e) => { e.stopPropagation(); handleVerify(property.id) }}
                             disabled={actionLoading === property.id}
                           >

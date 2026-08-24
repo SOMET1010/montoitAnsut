@@ -862,7 +862,7 @@ export function InventoryReportForm() {
         <Button
           onClick={handleValidate}
           disabled={saving}
-          className="bg-brand-500 hover:bg-brand-600 text-white gap-2 order-1 sm:order-3"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 order-1 sm:order-3"
         >
           <CheckCircle2 className="size-4" /> Valider l&apos;état des lieux
         </Button>

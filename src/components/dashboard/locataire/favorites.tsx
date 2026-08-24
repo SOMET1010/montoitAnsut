@@ -179,7 +179,7 @@ export function Favorites() {
               </p>
               <Button
                 onClick={handleBrowseProperties}
-                className="bg-brand-500 hover:bg-brand-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 Explorer les biens
                 <ArrowRight className="size-4 ml-2" />

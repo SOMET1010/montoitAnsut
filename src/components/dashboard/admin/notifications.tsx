@@ -363,7 +363,7 @@ export function AdminNotifications() {
                   <Switch checked={prefs[pref.key]} onCheckedChange={() => togglePref(pref.key)} />
                 </div>
               ))}
-              <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2" onClick={() => toast.success('Préférences sauvegardées')}>
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2" onClick={() => toast.success('Préférences sauvegardées')}>
                 <Check className="size-4" /> Sauvegarder
               </Button>
             </CardContent>

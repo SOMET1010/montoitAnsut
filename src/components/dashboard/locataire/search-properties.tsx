@@ -444,7 +444,7 @@ export function SearchProperties() {
               <Button
                 onClick={handleSearch}
                 disabled={loading}
-                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white h-11"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground h-11"
               >
                 {loading ? (
                   <div className="flex items-center gap-2">
@@ -671,7 +671,7 @@ export function SearchProperties() {
                           <Button
                             size="sm"
                             onClick={(e) => openVisitDialog(e, property)}
-                            className="bg-brand-500 hover:bg-brand-600 text-white text-xs h-7 px-2.5 shrink-0"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-7 px-2.5 shrink-0"
                           >
                             <CalendarDays className="size-3 mr-1" />
                             Visiter
@@ -708,7 +708,7 @@ export function SearchProperties() {
                 </p>
                 <Button
                   onClick={handleBrowseAll}
-                  className="bg-brand-500 hover:bg-brand-600 text-white"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Search className="size-4 mr-2" />
                   Voir les biens
@@ -801,7 +801,7 @@ export function SearchProperties() {
             <Button
               onClick={submitVisitRequest}
               disabled={visitDialog.submitting || !visitDialog.requestedDate || !visitDialog.timeSlot}
-              className="bg-brand-500 hover:bg-brand-600 text-white h-9"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground h-9"
             >
               {visitDialog.submitting ? (
                 <div className="flex items-center gap-2">

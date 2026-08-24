@@ -479,7 +479,7 @@ export function DocumentationCenter() {
                         </div>
                       </div>
                       <Button
-                        className="w-full mt-4 bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                        className="w-full mt-4 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                         size="sm"
                         onClick={() => {
                           // Placeholder — no actual navigation

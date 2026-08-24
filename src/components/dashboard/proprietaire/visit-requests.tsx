@@ -951,7 +951,7 @@ export function VisitRequests() {
             <Button
               onClick={handleCounterPropose}
               disabled={actionLoading || !counterDate || !counterTimeSlot}
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
             >
               {actionLoading ? <Loader2 className="size-4 animate-spin" /> : <Calendar className="size-4" />}
               Envoyer la proposition

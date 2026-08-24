@@ -281,7 +281,7 @@ export function FraudAlertsManagement() {
               </div>
             </div>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shrink-0 shadow-sm"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shrink-0 shadow-sm"
               onClick={() => setCreateDialog(true)}
             >
               <Plus className="size-4" /> Nouvelle alerte
@@ -381,7 +381,7 @@ export function FraudAlertsManagement() {
               className={cn(
                 'text-xs',
                 statusFilter === opt.value
-                  ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                  ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
               )}
               onClick={() => setStatusFilter(opt.value)}
@@ -402,7 +402,7 @@ export function FraudAlertsManagement() {
               Les alertes de fraude apparaîtront ici
             </p>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2 mt-4"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 mt-4"
               onClick={() => setCreateDialog(true)}
             >
               <Plus className="size-4" /> Créer une alerte
@@ -731,7 +731,7 @@ export function FraudAlertsManagement() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleCreate}
               disabled={submitting || !createForm.suspectId || !createForm.description.trim()}
             >

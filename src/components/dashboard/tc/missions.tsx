@@ -550,7 +550,7 @@ export function MissionsManagement() {
                 </div>
               </div>
             </div>
-            <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shrink-0 shadow-sm" onClick={openCreateDialog}>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shrink-0 shadow-sm" onClick={openCreateDialog}>
               <Plus className="size-4" /> Nouvelle mission
             </Button>
           </div>
@@ -1167,7 +1167,7 @@ export function MissionsManagement() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2 w-full sm:w-auto"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 w-full sm:w-auto"
               onClick={handleCreate}
               disabled={creating || !createForm.propertyId || !createForm.agentId || !createForm.scheduledAt}
             >
@@ -1333,7 +1333,7 @@ export function MissionsManagement() {
                         />
                         <Button
                           size="sm"
-                          className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                           onClick={handleAddPhoto}
                           disabled={!newPhotoUrl.trim() || actionLoading !== null}
                         >
@@ -1361,7 +1361,7 @@ export function MissionsManagement() {
                   <div className="flex justify-end mt-2">
                     <Button
                       size="sm"
-                      className="bg-brand-500 hover:bg-brand-600 text-white"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
                       onClick={handleSaveFeedback}
                       disabled={savingFeedback}
                     >
@@ -1375,7 +1375,7 @@ export function MissionsManagement() {
               {/* Status workflow buttons */}
               <div className="flex gap-2 pt-2 border-t border-border">
                 {detailDialog.mission.status === 'ASSIGNED' && (
-                  <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-1 flex-1"
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 flex-1"
                     onClick={() => handleStatusChange(detailDialog.mission!.id, 'IN_PROGRESS')}
                     disabled={actionLoading === detailDialog.mission.id}>
                     {actionLoading === detailDialog.mission.id ? <Loader2 className="size-4 animate-spin" /> : <Clock className="size-4" />}

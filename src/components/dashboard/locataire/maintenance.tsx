@@ -368,7 +368,7 @@ export function Maintenance() {
               <p className="text-muted-foreground mt-0.5">Demandes d&apos;intervention et suivi</p>
             </div>
           </div>
-          <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shrink-0" onClick={handleOpenDialog}>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shrink-0" onClick={handleOpenDialog}>
             <Plus className="size-4" />
             Nouvelle demande
           </Button>
@@ -429,7 +429,7 @@ export function Maintenance() {
               </p>
               <Button
                 onClick={handleOpenDialog}
-                className="mt-4 bg-brand-500 hover:bg-brand-600 text-white"
+                className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <Plus className="size-4 mr-2" />
                 Nouvelle demande
@@ -660,7 +660,7 @@ export function Maintenance() {
             <Button
               onClick={handleSubmit}
               disabled={submitting || !formLeaseId || !formTitle.trim() || !formDescription.trim() || leases.length === 0}
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {submitting ? 'Envoi...' : 'Envoyer la demande'}
             </Button>

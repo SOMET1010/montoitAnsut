@@ -478,7 +478,7 @@ export function LitigesManagement() {
         return (
           <Button
             size="sm"
-            className="bg-brand-500 hover:bg-brand-600 text-white gap-1"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
             onClick={(e) => { e.stopPropagation(); handleTakeCharge(dispute.id) }}
             disabled={actionLoading === dispute.id}
           >
@@ -710,7 +710,7 @@ export function LitigesManagement() {
           <Button
             size="sm"
             variant={statusFilter === 'ALL' ? 'default' : 'outline'}
-            className={statusFilter === 'ALL' ? 'bg-brand-500 hover:bg-brand-600 text-white' : ''}
+            className={statusFilter === 'ALL' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}
             onClick={() => setStatusFilter('ALL')}
           >
             Tous statuts
@@ -720,7 +720,7 @@ export function LitigesManagement() {
               key={s}
               size="sm"
               variant={statusFilter === s ? 'default' : 'outline'}
-              className={statusFilter === s ? 'bg-brand-500 hover:bg-brand-600 text-white' : ''}
+              className={statusFilter === s ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}
               onClick={() => setStatusFilter(s)}
             >
               {statusLabels[s]}
@@ -1434,7 +1434,7 @@ export function LitigesManagement() {
                       </Button>
                       <Button
                         size="sm"
-                        className="bg-brand-500 hover:bg-brand-600 text-white"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
                         onClick={handleSaveInvestigationNotes}
                         disabled={actionLoading !== null}
                       >
@@ -1485,7 +1485,7 @@ export function LitigesManagement() {
                         />
                         <Button
                           size="sm"
-                          className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                           onClick={handleAddEvidence}
                           disabled={!newEvidenceUrl.trim() || actionLoading !== null}
                         >

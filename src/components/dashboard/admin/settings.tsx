@@ -212,7 +212,7 @@ export function AdminSettings() {
 
             <div className="flex justify-end">
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                 onClick={() => handleSave('security', security)}
                 disabled={saving}
               >
@@ -277,7 +277,7 @@ export function AdminSettings() {
 
             <div className="flex justify-end">
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                 onClick={() => handleSave('notifications', notifications)}
                 disabled={saving}
               >
@@ -381,7 +381,7 @@ export function AdminSettings() {
 
             <div className="flex justify-end">
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                 onClick={() => handleSave('sla', sla)}
                 disabled={saving}
               >

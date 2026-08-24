@@ -185,7 +185,7 @@ export function Hero() {
             </div>
             <Button
               size="lg"
-              className="h-11 bg-brand-500 hover:bg-brand-600 text-white px-6 shrink-0"
+              className="h-11 bg-primary hover:bg-primary/90 text-primary-foreground px-6 shrink-0"
               onClick={handleSearch}
             >
               <Home className="size-4 mr-2" />

@@ -249,7 +249,7 @@ export function MyDisputes() {
           <p className="text-muted-foreground mt-1">Signalez et suivez vos litiges</p>
         </div>
         <Button
-          className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
           onClick={() => {
             fetchUserLeases()
             setCreateOpen(true)
@@ -334,7 +334,7 @@ export function MyDisputes() {
           <Button
             size="sm"
             variant={statusFilter === 'ALL' ? 'default' : 'outline'}
-            className={statusFilter === 'ALL' ? 'bg-brand-500 hover:bg-brand-600 text-white' : ''}
+            className={statusFilter === 'ALL' ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}
             onClick={() => setStatusFilter('ALL')}
           >
             Tous
@@ -582,7 +582,7 @@ export function MyDisputes() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               onClick={handleCreateDispute}
               disabled={!newType || !newDescription.trim() || !newLeaseId || submitting}
             >

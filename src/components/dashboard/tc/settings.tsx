@@ -707,7 +707,7 @@ export function TcSettings() {
                         />
                         <Button
                           size="sm"
-                          className="text-xs h-8 bg-brand-500 hover:bg-brand-600 text-white"
+                          className="text-xs h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={handleVerifyPhoneCode}
                           disabled={phoneSending || phoneOtpCode.length < 6}
                         >
@@ -793,7 +793,7 @@ export function TcSettings() {
                       />
                       <Button
                         size="sm"
-                        className="text-xs h-8 bg-brand-500 hover:bg-brand-600 text-white"
+                        className="text-xs h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
                         onClick={handleVerifyEmailCode}
                         disabled={emailSending || emailOtpCode.length < 6}
                       >
@@ -822,7 +822,7 @@ export function TcSettings() {
                   <Button
                     onClick={handleSave}
                     disabled={saving}
-                    className="bg-brand-500 hover:bg-brand-600 text-white"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {saving ? (
                       <><Loader2 className="size-4 mr-2 animate-spin" /> Enregistrement...</>
@@ -1148,7 +1148,7 @@ export function TcSettings() {
                   <Button
                     onClick={handlePasswordChange}
                     disabled={passwordSaving || !currentPassword || !newPassword || !confirmPassword}
-                    className="bg-brand-500 hover:bg-brand-600 text-white text-xs h-9"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-9"
                   >
                     {passwordSaving ? (
                       <><Loader2 className="size-3.5 mr-1.5 animate-spin" /> Enregistrement...</>

@@ -497,7 +497,7 @@ export function RentalFileForm({ onBack, onSubmitSuccess }: { onBack?: () => voi
             {existingFile.status !== 'DRAFT' && existingFile.status !== 'SUBMITTED' && existingFile.status !== 'VALIDATED' && (
               <Button
                 size="sm"
-                className="mt-3 bg-brand-500 hover:bg-brand-600 text-white gap-1.5"
+                className="mt-3 bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
                 onClick={handleSubmit}
                 disabled={submitting || !hasAllRequiredDocs}
               >
@@ -785,7 +785,7 @@ export function RentalFileForm({ onBack, onSubmitSuccess }: { onBack?: () => voi
                           <Button
                             variant={existingDoc ? "outline" : "default"}
                             size="sm"
-                            className={`gap-1.5 ${!existingDoc ? 'bg-brand-500 hover:bg-brand-600 text-white' : ''}`}
+                            className={`gap-1.5 ${!existingDoc ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : ''}`}
                             disabled={isUploading}
                             onClick={() => fileInputRefs.current[doc.type]?.click()}
                             title={existingDoc ? 'Remplacer le document' : 'Téléverser le document'}
@@ -863,7 +863,7 @@ export function RentalFileForm({ onBack, onSubmitSuccess }: { onBack?: () => voi
               {step < steps.length ? (
                 <Button
                   onClick={() => setStep(step + 1)}
-                  className="bg-brand-500 hover:bg-brand-600 text-white gap-1 w-full sm:w-auto"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 w-full sm:w-auto"
                   disabled={isReadOnly}
                 >
                   Suivant
@@ -874,7 +874,7 @@ export function RentalFileForm({ onBack, onSubmitSuccess }: { onBack?: () => voi
                   <Button
                     onClick={handleSubmit}
                     disabled={submitting || !hasAllRequiredDocs}
-                    className="bg-brand-500 hover:bg-brand-600 text-white gap-1 w-full sm:w-auto disabled:opacity-50"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1 w-full sm:w-auto disabled:opacity-50"
                   >
                     {submitting ? (
                       'Envoi...'

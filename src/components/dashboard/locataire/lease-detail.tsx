@@ -571,7 +571,7 @@ export function LeaseDetail({ leaseId, onBack }: LeaseDetailProps) {
       {canSign && (
         <div className="pt-2">
           <Button
-            className="w-full bg-brand-500 hover:bg-brand-600 text-white gap-2"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
             onClick={() => setShowSignDialog(true)}
           >
             <PenTool className="size-4" />
@@ -896,7 +896,7 @@ export function LeaseDetail({ leaseId, onBack }: LeaseDetailProps) {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               onClick={async () => {
                 setRenewing(true)
                 try {

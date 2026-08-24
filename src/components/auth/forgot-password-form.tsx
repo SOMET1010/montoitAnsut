@@ -291,7 +291,7 @@ export function ForgotPasswordForm() {
 
                     <Button
                       type="submit"
-                      className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold"
+                      className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold"
                       disabled={submitting}
                     >
                       {submitting ? (
@@ -352,7 +352,7 @@ export function ForgotPasswordForm() {
 
                     <Button
                       type="submit"
-                      className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold"
+                      className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold"
                       disabled={submitting || code.length < 6}
                     >
                       {submitting ? (
@@ -511,7 +511,7 @@ export function ForgotPasswordForm() {
 
                     <Button
                       type="submit"
-                      className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold"
+                      className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold"
                       disabled={submitting || !passwordsMatch || passwordStrength < 4}
                     >
                       {submitting ? (

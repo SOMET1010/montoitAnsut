@@ -192,7 +192,7 @@ export function ContactDialog({ trigger, onMessageSent, defaultRecipientId }: Co
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
             <MessageSquare className="size-4" />
             Contacter
           </Button>
@@ -382,7 +382,7 @@ export function ContactDialog({ trigger, onMessageSent, defaultRecipientId }: Co
             <Button
               onClick={handleSend}
               disabled={!selectedRecipient || !messageText.trim() || sending}
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
             >
               {sending ? (
                 <Loader2 className="size-4 animate-spin" />

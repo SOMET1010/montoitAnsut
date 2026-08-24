@@ -803,7 +803,7 @@ export function PropertyVerifyDetail() {
               </Button>
               <div className="w-full border-t border-border my-2" />
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2 h-10 text-sm w-full justify-start"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 h-10 text-sm w-full justify-start"
                 onClick={goToInventoryForm}
               >
                 <FileText className="size-4" />

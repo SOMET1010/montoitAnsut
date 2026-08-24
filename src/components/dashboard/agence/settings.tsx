@@ -382,7 +382,7 @@ export function AgenceSettings() {
                         />
                         <Button
                           size="sm"
-                          className="text-xs h-8 bg-brand-500 hover:bg-brand-600 text-white"
+                          className="text-xs h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={handleVerifyEmailCode}
                           disabled={emailSending || emailOtpCode.length < 6}
                         >
@@ -424,7 +424,7 @@ export function AgenceSettings() {
                         />
                         <Button
                           size="sm"
-                          className="text-xs h-8 bg-brand-500 hover:bg-brand-600 text-white"
+                          className="text-xs h-8 bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={handleVerifyPhoneCode}
                           disabled={phoneSending || phoneOtpCode.length < 6}
                         >
@@ -446,7 +446,7 @@ export function AgenceSettings() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSaveProfile} disabled={saving} className="bg-brand-500 hover:bg-brand-600 text-white">
+                  <Button onClick={handleSaveProfile} disabled={saving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     {saving ? <><Loader2 className="size-4 mr-2 animate-spin" /> Sauvegarde...</> : <><Save className="size-4 mr-2" /> Sauvegarder</>}
                   </Button>
                 </div>
@@ -520,7 +520,7 @@ export function AgenceSettings() {
                 </div>
 
                 <div className="flex justify-end pt-2">
-                  <Button onClick={handleSaveCommission} disabled={saving} className="bg-brand-500 hover:bg-brand-600 text-white">
+                  <Button onClick={handleSaveCommission} disabled={saving} className="bg-primary hover:bg-primary/90 text-primary-foreground">
                     {saving ? <><Loader2 className="size-4 mr-2 animate-spin" /> Sauvegarde...</> : <><Save className="size-4 mr-2" /> Enregistrer</>}
                   </Button>
                 </div>

@@ -560,7 +560,7 @@ export function OwnerFileDetail() {
                     <p className="text-xs text-amber-600 mt-1">Reprendre pour pouvoir valider ou rejeter</p>
                   </div>
                   <Button
-                    className="w-full bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                     disabled={actionLoading}
                     onClick={handleResume}
                   >
@@ -659,7 +659,7 @@ export function OwnerFileDetail() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setRequestInfoDialog(false)}>Annuler</Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={!requestInfoComment.trim() || actionLoading}
               onClick={handleRequestInfoConfirm}
             >

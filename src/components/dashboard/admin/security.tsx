@@ -205,7 +205,7 @@ export function AdminSecurity() {
                 </div>
               </div>
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                 onClick={async () => {
                   setSavingRules(true)
                   try {

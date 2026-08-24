@@ -426,7 +426,7 @@ export function KycVerificationModal({
               <Button
                 onClick={handleKycUploadBoth}
                 disabled={!kycDocImage || kycStep === 'uploading'}
-                className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white"
+                className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 {kycStep === 'uploading' ? (
                   <><Loader2 className="size-4 mr-2 animate-spin" /> Envoi en cours...</>
@@ -474,7 +474,7 @@ export function KycVerificationModal({
 
               <Button
                 onClick={handleKycOpenSelfie}
-                className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white"
+                className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <ScanFace className="size-4 mr-2" />
                 Ouvrir la vérification faciale

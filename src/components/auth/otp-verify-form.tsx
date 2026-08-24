@@ -219,7 +219,7 @@ export function OtpVerifyForm() {
 
               <Button
                 type="submit"
-                className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold"
+                className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground text-base font-semibold"
                 disabled={isLoading || code.length < 6}
               >
                 {isLoading ? (

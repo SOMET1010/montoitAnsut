@@ -229,7 +229,7 @@ export function FAQ() {
                 className={cn(
                   'rounded-full text-xs sm:text-sm font-medium transition-all',
                   activeCategory === cat.id
-                    ? 'bg-brand-500 hover:bg-brand-600 text-white shadow-sm'
+                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-brand-600 hover:border-brand-300'
                 )}
               >
@@ -277,7 +277,7 @@ export function FAQ() {
                 Notre équipe est disponible pour répondre à toutes vos questions et vous accompagner dans votre démarche.
               </p>
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white rounded-full px-6"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6"
                 onClick={() => {
                   setView('nous-contacter')
                   window.scrollTo({ top: 0, behavior: 'smooth' })

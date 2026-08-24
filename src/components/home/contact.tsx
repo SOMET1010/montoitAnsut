@@ -223,7 +223,7 @@ export function Contact() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full h-11 bg-brand-500 hover:bg-brand-600 text-white font-medium"
+                  className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">

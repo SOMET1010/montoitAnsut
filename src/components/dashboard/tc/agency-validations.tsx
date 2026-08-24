@@ -423,7 +423,7 @@ export function AgencyValidations({ showHeaderAndStats = true }: { showHeaderAnd
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => { setRequestInfoId(null); setRequestInfoComment('') }}>Annuler</Button>
-            <Button className="bg-brand-500 hover:bg-brand-600 text-white" onClick={() => { if (requestInfoId) handleAction(requestInfoId, 'REQUEST_INFO', requestInfoComment); setRequestInfoId(null); setRequestInfoComment('') }} disabled={!requestInfoComment.trim()}>Envoyer</Button>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => { if (requestInfoId) handleAction(requestInfoId, 'REQUEST_INFO', requestInfoComment); setRequestInfoId(null); setRequestInfoComment('') }} disabled={!requestInfoComment.trim()}>Envoyer</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

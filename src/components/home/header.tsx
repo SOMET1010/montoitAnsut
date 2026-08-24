@@ -314,7 +314,7 @@ export function Header() {
               <Button variant="outline" size="sm" onClick={handleLogin}>
                 Se connecter
               </Button>
-      <Button size="sm" className="bg-brand-500 hover:bg-brand-600 text-white" onClick={handleRegister}>
+      <Button size="sm" className="bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleRegister}>
         S&apos;inscrire
       </Button>
             </>
@@ -486,7 +486,7 @@ export function Header() {
                     <Button variant="outline" className="w-full" onClick={handleLogin}>
                       Se connecter
                     </Button>
-                    <Button className="w-full bg-brand-500 hover:bg-brand-600 text-white" onClick={handleRegister}>
+                    <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" onClick={handleRegister}>
                       S&apos;inscrire
                     </Button>
                   </div>

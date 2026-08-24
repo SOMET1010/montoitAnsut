@@ -1121,7 +1121,7 @@ export function NosBiensView() {
             </p>
             <Button
               onClick={() => window.location.reload()}
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               <RotateCcw className="size-4 mr-2" />
               Réessayer
@@ -1171,7 +1171,7 @@ export function NosBiensView() {
               size="sm"
               className={`h-11 rounded-xl text-xs shadow-sm gap-1.5 shrink-0 ${
                 userLocation
-                  ? 'bg-brand-500 hover:bg-brand-600 text-white border-brand-500'
+                  ? 'bg-primary hover:bg-primary/90 text-primary-foreground border-brand-500'
                   : 'text-muted-foreground border-border hover:bg-accent'
               }`}
               onClick={requestGeolocation}
@@ -1255,7 +1255,7 @@ export function NosBiensView() {
               </div>
               <div className="px-4 pb-4 mt-auto">
                 <Button
-                  className="w-full bg-brand-500 hover:bg-brand-600 text-white"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
                   onClick={() => setMobileFiltersOpen(false)}
                 >
                   Voir {filteredProperties.length} résultat{filteredProperties.length !== 1 ? 's' : ''}

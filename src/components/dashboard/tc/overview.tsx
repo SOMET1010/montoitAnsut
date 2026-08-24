@@ -745,7 +745,7 @@ export function TcOverview() {
               </div>
               <Button
                 onClick={() => setDashboardSection('property-verifications')}
-                className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
               >
                 Vérifier
               </Button>
@@ -795,7 +795,7 @@ export function TcOverview() {
               </div>
               <Button
                 onClick={() => setDashboardSection('certifications')}
-                className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
               >
                 Traiter
               </Button>

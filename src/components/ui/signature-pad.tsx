@@ -202,7 +202,7 @@ export function SignaturePad({
             onClick={handleConfirm}
             disabled={!hasSignature || loading}
             className={cn(
-              'gap-1.5 bg-brand-500 hover:bg-brand-600 text-white',
+              'gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground',
               !hasSignature && 'opacity-50 cursor-not-allowed'
             )}
           >

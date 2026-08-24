@@ -89,7 +89,7 @@ export function PaginationControls({
               size="sm"
               className={cn(
                 'h-8 w-8 p-0 text-xs',
-                p === page && 'bg-brand-500 hover:bg-brand-600 text-white'
+                p === page && 'bg-primary hover:bg-primary/90 text-primary-foreground'
               )}
               onClick={() => onPageChange(p)}
               aria-label={`Page ${p}`}

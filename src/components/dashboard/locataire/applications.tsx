@@ -246,7 +246,7 @@ export function Applications({ onDetail }: ApplicationsProps) {
                 </p>
                 <Button
                   onClick={handleEditRentalFile}
-                  className="bg-brand-500 hover:bg-brand-600 text-white"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <FileText className="size-4 mr-2" />
                   Créer mon dossier

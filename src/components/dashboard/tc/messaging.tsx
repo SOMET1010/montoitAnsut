@@ -546,7 +546,7 @@ export function TcMessaging() {
             </div>
             <Dialog open={newConvOpen} onOpenChange={setNewConvOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shadow-sm">
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shadow-sm">
                   <Plus className="size-4" />
                   <span className="hidden sm:inline">Nouvelle conversation</span>
                   <span className="sm:hidden">Nouveau</span>
@@ -665,7 +665,7 @@ export function TcMessaging() {
                   <Button
                     onClick={handleStartConversation}
                     disabled={!newRecipientId || !messageText.trim() || sending}
-                    className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                   >
                     <Send className="size-4" />
                   </Button>
@@ -988,7 +988,7 @@ export function TcMessaging() {
                         size="icon"
                         onClick={handleSendMessage}
                         disabled={(!messageText.trim() && pendingFiles.length === 0) || sending}
-                        className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                       >
                         {sending ? (
                           <Loader2 className="size-4 animate-spin" />

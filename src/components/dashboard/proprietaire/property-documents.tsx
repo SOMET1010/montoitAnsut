@@ -563,7 +563,7 @@ export function PropertyDocuments() {
         </div>
         <Button
           onClick={() => openUploadDialog()}
-          className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <PlusCircle className="size-4" />
           <span className="hidden sm:inline">Ajouter un document</span>
@@ -744,7 +744,7 @@ export function PropertyDocuments() {
                 {documents.length === 0 && (
                   <Button
                     onClick={() => openUploadDialog()}
-                    className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     <Upload className="size-4" />
                     Ajouter un document
@@ -1025,7 +1025,7 @@ export function PropertyDocuments() {
             <Button
               onClick={handleUpload}
               disabled={uploading}
-              className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {uploading ? (
                 <>

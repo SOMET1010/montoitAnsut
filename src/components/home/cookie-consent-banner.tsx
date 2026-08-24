@@ -112,7 +112,7 @@ export function CookieConsentBanner() {
               <Button
                 onClick={handleAccept}
                 size="sm"
-                className="flex-1 sm:flex-none bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm"
+                className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm"
               >
                 Accepter
               </Button>

@@ -533,7 +533,7 @@ export function AllProperties() {
               className={cn(
                 'text-xs',
                 filterStatus === opt.value
-                  ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                  ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
               )}
               onClick={() => setFilterStatus(opt.value === 'ALL' ? '' : opt.value)}

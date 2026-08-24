@@ -728,7 +728,7 @@ export function AgentsManagement() {
               <p className="text-muted-foreground mt-0.5">Gérez vos agents de vérification terrain</p>
             </div>
           </div>
-          <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2 shrink-0" onClick={openCreateDialog}>
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 shrink-0" onClick={openCreateDialog}>
             <UserPlus className="size-4" /> Nouvel agent
           </Button>
         </div>
@@ -833,7 +833,7 @@ export function AgentsManagement() {
             </p>
             {agents.length === 0 && (
               <Button
-                className="bg-brand-500 hover:bg-brand-600 text-white gap-2 mt-4"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2 mt-4"
                 onClick={openCreateDialog}
               >
                 <UserPlus className="size-4" /> Ajouter un agent
@@ -1246,7 +1246,7 @@ export function AgentsManagement() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleFormSubmit}
               disabled={submitting}
             >
@@ -1301,7 +1301,7 @@ export function AgentsManagement() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={handleFeedbackSubmit}
               disabled={feedbackSubmitting}
             >

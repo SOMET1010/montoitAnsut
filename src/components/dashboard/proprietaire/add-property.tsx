@@ -1148,7 +1148,7 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
         <div className="flex-1" />
 
         {step < 5 ? (
-          <Button onClick={handleNext} disabled={!canGoNext() || submitting} className={cn('h-11 gap-2', canGoNext() ? 'bg-brand-500 hover:bg-brand-600 text-white' : '')}>
+          <Button onClick={handleNext} disabled={!canGoNext() || submitting} className={cn('h-11 gap-2', canGoNext() ? 'bg-primary hover:bg-primary/90 text-primary-foreground' : '')}>
             Suivant <ChevronRight className="size-4" />
           </Button>
         ) : (
@@ -1157,7 +1157,7 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
               {savingDraft ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
               <span className="truncate">{savingDraft ? 'Sauvegarde...' : 'Brouillon'}</span>
             </Button>
-            <Button onClick={handlePublish} disabled={submitting} className="flex-1 h-12 bg-brand-500 hover:bg-brand-600 text-white font-semibold gap-2">
+            <Button onClick={handlePublish} disabled={submitting} className="flex-1 h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold gap-2">
               {submitting ? <Loader2 className="size-5 animate-spin shrink-0" /> : <PlusCircle className="size-5 shrink-0" />}
               Soumettre pour vérification
             </Button>

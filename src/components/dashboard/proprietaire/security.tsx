@@ -346,7 +346,7 @@ export function OwnerSecurity() {
               <Button
                 onClick={handleChangePassword}
                 disabled={passwordSaving || !currentPassword || !newPassword || !confirmPassword}
-                className="bg-brand-500 hover:bg-brand-600 text-white"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 {passwordSaving ? (
                   <><Loader2 className="size-4 mr-2 animate-spin" /> Mise à jour...</>

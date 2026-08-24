@@ -426,7 +426,7 @@ export function ProprietaireMessages() {
           />
           <Dialog open={newConvOpen} onOpenChange={setNewConvOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
                 <Plus className="size-4" />
                 Nouvelle conversation
               </Button>
@@ -543,7 +543,7 @@ export function ProprietaireMessages() {
                   <Button
                     onClick={handleStartConversation}
                     disabled={!newRecipientId || !messageText.trim() || sending}
-                    className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                   >
                     <Send className="size-4" />
                   </Button>
@@ -789,7 +789,7 @@ export function ProprietaireMessages() {
                         size="icon"
                         onClick={handleSendMessage}
                         disabled={(!messageText.trim() && pendingFiles.length === 0) || sending}
-                        className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                       >
                         <Send className="size-4" />
                       </Button>

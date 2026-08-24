@@ -793,7 +793,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                         />
                         <Button
                           size="sm"
-                          className="h-9 text-xs shrink-0 bg-brand-500 hover:bg-brand-600 text-white"
+                          className="h-9 text-xs shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={handleVerifyPhoneCode}
                           disabled={phoneSending || phoneOtpCode.length < 4}
                         >
@@ -889,7 +889,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                         />
                         <Button
                           size="sm"
-                          className="h-9 text-xs shrink-0 bg-brand-500 hover:bg-brand-600 text-white"
+                          className="h-9 text-xs shrink-0 bg-primary hover:bg-primary/90 text-primary-foreground"
                           onClick={handleVerifyEmailCode}
                           disabled={emailSending || emailOtpCode.length < 4}
                         >
@@ -916,7 +916,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                   <Button
                     onClick={handleSaveProfile}
                     disabled={profileSaving}
-                    className="bg-brand-500 hover:bg-brand-600 text-white"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {profileSaving ? (
                       <><Loader2 className="size-4 mr-2 animate-spin" /> Enregistrement...</>
@@ -1054,7 +1054,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                   <Button
                     onClick={handleOneciVerify}
                     disabled={oneciVerifying || !(profile as any)?.nni || (profile as any)?.nni?.length < 10}
-                    className="bg-brand-500 hover:bg-brand-600 text-white"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {oneciVerifying ? (
                       <><Loader2 className="size-4 mr-2 animate-spin" /> Vérification en cours...</>

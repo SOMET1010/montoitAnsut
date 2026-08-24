@@ -278,7 +278,7 @@ export function OneciVerification() {
               className={cn(
                 'text-xs',
                 filter === opt.value
-                  ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                  ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                   : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
               )}
               onClick={() => setFilter(opt.value)}

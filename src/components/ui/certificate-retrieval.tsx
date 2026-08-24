@@ -372,7 +372,7 @@ export function CertificateRetrieval({
               <Button
                 onClick={handleCheckCertificate}
                 disabled={checking}
-                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               >
                 {checking ? (
                   <>
@@ -535,7 +535,7 @@ export function CertificateRetrieval({
           {retrievedCert?.hasCertificate && (
             <Button
               onClick={handleUseCertificate}
-              className="w-full sm:w-auto bg-brand-500 hover:bg-brand-600 text-white"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               Utiliser ce certificat
             </Button>

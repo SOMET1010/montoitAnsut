@@ -15,7 +15,7 @@ export function TcManagement() {
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">Gestion des Tiers de Confiance</h1>
           <p className="text-muted-foreground mt-1">Créez et gérez les comptes TC</p>
         </div>
-        <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2" onClick={() => toast.info('Fonctionnalité à venir')}>
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2" onClick={() => toast.info('Fonctionnalité à venir')}>
           <Plus className="size-4" /> Créer un compte TC
         </Button>
       </div>

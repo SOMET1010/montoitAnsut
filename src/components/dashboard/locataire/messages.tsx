@@ -362,7 +362,7 @@ export function Messages() {
               setSelectedId(convId)
             }}
             trigger={
-              <Button className="bg-brand-500 hover:bg-brand-600 text-white gap-2">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
                 <Plus className="size-4" />
                 Nouvelle conversation
               </Button>
@@ -608,7 +608,7 @@ export function Messages() {
                         size="icon"
                         onClick={handleSendMessage}
                         disabled={(!messageText.trim() && pendingFiles.length === 0) || sending}
-                        className="bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                       >
                         <Send className="size-4" />
                       </Button>

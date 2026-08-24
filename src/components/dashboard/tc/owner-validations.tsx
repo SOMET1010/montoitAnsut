@@ -434,7 +434,7 @@ export function OwnerValidations({ showHeaderAndStats = true }: { showHeaderAndS
           className={cn(
             'text-xs',
             filterType === 'ALL'
-              ? 'bg-brand-500 hover:bg-brand-600 text-white'
+              ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
               : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
           )}
           onClick={() => setFilterType('ALL')}
@@ -449,7 +449,7 @@ export function OwnerValidations({ showHeaderAndStats = true }: { showHeaderAndS
             className={cn(
               'text-xs',
               filterType === type
-                ? 'bg-brand-500 hover:bg-brand-600 text-white'
+                ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                 : 'hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200'
             )}
             onClick={() => setFilterType(type)}

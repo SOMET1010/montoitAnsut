@@ -368,7 +368,7 @@ export function MyProperties() {
         </div>
         <Button
           onClick={handleOpenAddProperty}
-          className="gap-2 bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
         >
           <PlusCircle className="size-4" />
           <span className="hidden sm:inline">Ajouter un bien</span>
@@ -447,7 +447,7 @@ export function MyProperties() {
               </div>
               <Button
                 onClick={handleOpenAddProperty}
-                className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
               >
                 <PlusCircle className="size-4" />
                 Ajouter mon premier bien

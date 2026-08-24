@@ -554,7 +554,7 @@ export function ProprietaireMandats() {
         </div>
         <Button
           onClick={openCreateDialog}
-          className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <Plus className="size-4" />
           <span className="hidden sm:inline">Nouveau mandat</span>
@@ -637,7 +637,7 @@ export function ProprietaireMandats() {
               {!search && (
                 <Button
                   onClick={openCreateDialog}
-                  className="mt-4 gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                  className="mt-4 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Plus className="size-4" />
                   Créer un mandat
@@ -929,7 +929,7 @@ export function ProprietaireMandats() {
             <Button
               onClick={handleSubmit}
               disabled={creating || !formPropertyId || !formAgencyId || !formCommissionRate || !formStartDate || !formEndDate}
-              className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {creating ? (
                 <>
@@ -1026,7 +1026,7 @@ export function ProprietaireMandats() {
                 <Button
                   onClick={handleSendOtp}
                   disabled={sendingOtp}
-                  className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                  className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {sendingOtp ? (
                     <><Loader2 className="size-4 animate-spin" /> Envoi...</>
@@ -1087,7 +1087,7 @@ export function ProprietaireMandats() {
                   <Button
                     onClick={handleSign}
                     disabled={signing || !otpCode}
-                    className="gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                    className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                   >
                     {signing ? (
                       <><Loader2 className="size-4 animate-spin" /> Signature...</>
@@ -1402,7 +1402,7 @@ function MandatCard({
                   <Button
                     size="sm"
                     onClick={onSign}
-                    className="h-8 bg-brand-500 hover:bg-brand-600 text-white gap-1"
+                    className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
                   >
                     <FileSignature className="size-3.5" />
                     <span className="hidden lg:inline">Signer</span>

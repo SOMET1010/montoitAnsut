@@ -669,7 +669,7 @@ export function OwnerMaintenance() {
                             <>
                               <Button
                                 size="sm"
-                                className="h-7 text-[11px] px-3 bg-brand-500 hover:bg-brand-600 text-white"
+                                className="h-7 text-[11px] px-3 bg-primary hover:bg-primary/90 text-primary-foreground"
                                 onClick={() => handleTakeCharge(req)}
                               >
                                 <Play className="size-3 mr-1" />
@@ -976,7 +976,7 @@ export function OwnerMaintenance() {
             <Button
               onClick={handleCommentSubmit}
               disabled={submittingComment || !commentText.trim()}
-              className="bg-brand-500 hover:bg-brand-600 text-white"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground"
             >
               {submittingComment ? (
                 'Envoi...'

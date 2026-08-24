@@ -320,7 +320,7 @@ export function InventoryReportsList() {
                             className={cn(
                               'gap-1.5 text-xs h-8',
                               isDraft &&
-                                'bg-brand-500 hover:bg-brand-600 text-white'
+                                'bg-primary hover:bg-primary/90 text-primary-foreground'
                             )}
                             onClick={() => handleReportClick(report)}
                           >
@@ -436,7 +436,7 @@ export function InventoryReportsList() {
                               className={cn(
                                 'gap-1.5 text-xs h-7',
                                 isDraft &&
-                                  'bg-brand-500 hover:bg-brand-600 text-white'
+                                  'bg-primary hover:bg-primary/90 text-primary-foreground'
                               )}
                               onClick={() => handleReportClick(report)}
                             >

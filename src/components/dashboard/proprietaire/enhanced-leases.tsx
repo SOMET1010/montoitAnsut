@@ -703,7 +703,7 @@ export function EnhancedLeases() {
                 <p className="text-sm text-muted-foreground/70 mt-1">Créez un nouveau bail pour commencer</p>
                 <Button
                   onClick={() => setActiveTab('create')}
-                  className="mt-4 bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                  className="mt-4 bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                 >
                   <Plus className="size-4" /> Créer un bail
                 </Button>
@@ -810,7 +810,7 @@ export function EnhancedLeases() {
                             {!lease.ownerSignedAt && lease.status === 'DRAFT' && (
                               <Button
                                 size="sm"
-                                className="h-8 bg-brand-500 hover:bg-brand-600 text-white gap-1"
+                                className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
                                 onClick={() => handleSendForSignature(lease)}
                               >
                                 <Send className="size-3.5" />
@@ -820,7 +820,7 @@ export function EnhancedLeases() {
                             {!lease.ownerSignedAt && lease.status === 'PENDING_SIGNATURE' && (
                               <Button
                                 size="sm"
-                                className="h-8 bg-brand-500 hover:bg-brand-600 text-white gap-1"
+                                className="h-8 bg-primary hover:bg-primary/90 text-primary-foreground gap-1"
                                 onClick={() => { setSignLease(lease); setSignDialogOpen(true) }}
                               >
                                 <ShieldCheck className="size-3.5" />
@@ -968,7 +968,7 @@ export function EnhancedLeases() {
                               <Eye className="size-3.5" /> Détails
                             </Button>
                             {lease.status === 'EXPIRED' && (
-                              <Button size="sm" className="h-8 gap-1 bg-brand-500 hover:bg-brand-600 text-white" onClick={() => {
+                              <Button size="sm" className="h-8 gap-1 bg-primary hover:bg-primary/90 text-primary-foreground" onClick={() => {
                                 setRenewLease(lease)
                                 setRenewEndDate('')
                                 setRenewMonthlyRent('')
@@ -1201,7 +1201,7 @@ export function EnhancedLeases() {
                         <ChevronLeft className="size-4" /> Retour
                       </Button>
                       <Button
-                        className="bg-brand-500 hover:bg-brand-600 text-white gap-1.5"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
                         onClick={() => setCreateStep(3)}
                         disabled={!leaseForm.monthlyRent || !leaseForm.startDate || !leaseForm.endDate}
                       >
@@ -1270,7 +1270,7 @@ export function EnhancedLeases() {
                         <ChevronLeft className="size-4" /> Retour
                       </Button>
                       <Button
-                        className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                         onClick={handleCreateLease}
                         disabled={creating}
                       >
@@ -1307,7 +1307,7 @@ export function EnhancedLeases() {
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Button
-                          className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
                           onClick={() => {
                             if (createdLeaseId) {
                               const lease = allLeases.find((l) => l.id === createdLeaseId)
@@ -1483,7 +1483,7 @@ export function EnhancedLeases() {
                       />
                     </div>
                     <Button
-                      className="w-full gap-2 bg-brand-500 hover:bg-brand-600 text-white"
+                      className="w-full gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                       onClick={handleSignLease}
                       disabled={signing || signOtp.length < 4}
                     >
@@ -1770,7 +1770,7 @@ export function EnhancedLeases() {
                   <>
                     <Button
                       size="sm"
-                      className="bg-brand-500 hover:bg-brand-600 text-white gap-1.5"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
                       onClick={() => {
                         setDetailDialogOpen(false)
                         handleSendForSignature(detailLease)
@@ -1808,7 +1808,7 @@ export function EnhancedLeases() {
                   <>
                     <Button
                       size="sm"
-                      className="bg-brand-500 hover:bg-brand-600 text-white gap-1.5"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground gap-1.5"
                       onClick={() => {
                         setDetailDialogOpen(false)
                         setSignLease(detailLease)
@@ -1928,7 +1928,7 @@ export function EnhancedLeases() {
               Annuler
             </Button>
             <Button
-              className="bg-brand-500 hover:bg-brand-600 text-white gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
               onClick={handleModifyLease}
               disabled={modifying}
             >

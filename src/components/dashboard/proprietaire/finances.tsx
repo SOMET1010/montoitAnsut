@@ -444,7 +444,7 @@ export function OwnerFinances() {
                   </div>
                   <Button
                     size="sm"
-                    className="h-8 text-xs gap-1.5 bg-brand-500 hover:bg-brand-600 text-white shrink-0"
+                    className="h-8 text-xs gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                     disabled={sendingReminder === reminder.paymentId}
                     onClick={() => handleSendReminder(reminder)}
                   >
