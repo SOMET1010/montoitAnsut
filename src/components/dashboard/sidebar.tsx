@@ -6,7 +6,7 @@ import {
 import Image from 'next/image'
 import { useAuthStore } from '@/lib/auth-store'
 import { getRoleLabel, getRoleColor } from '@/lib/roles'
-import { getSidebarSections } from '@/lib/nav-config'
+import { getSidebarSections, detailToParent } from '@/lib/nav-config'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,18 +20,6 @@ import { usePaymentAlerts } from '@/hooks/use-payment-alerts'
 interface SidebarContentProps {
   collapsed?: boolean
   onNavigate?: () => void  // called after clicking a nav item (to close mobile Sheet)
-}
-
-// Map detail sections to their parent sidebar item
-const detailToParent: Record<string, string> = {
-  'payment-detail': 'payments',
-  'application-detail': 'applications',
-  'visit-detail': 'my-visits',
-  'lease-detail': 'my-leases',
-  'add-property': 'my-properties',
-  'tenant-detail': 'my-tenants',
-  'property-verify-detail': 'property-verifications',
-  'inventory-report-form': 'inventory-reports',
 }
 
 export function SidebarContent({ collapsed = false, onNavigate }: SidebarContentProps) {

@@ -47,11 +47,11 @@ export const NAV_ITEMS: Record<AuthUser['role'], NavItem[]> = {
     { section: 'payments', icon: CreditCard,
       sidebar: { label: 'Mes paiements', group: 'LOCATION' }, header: { label: 'Mes paiements', group: 'LOCATION' } },
     { section: 'messages', icon: MessageSquare,
-      sidebar: { label: 'Mes messages', group: 'MESSAGES' }, header: { label: 'Messages', group: 'MESSAGES' } },
+      sidebar: { label: 'Mes messages', group: 'MESSAGES' }, header: { label: 'Mes messages', group: 'MESSAGES' } },
     { section: 'disputes', icon: Scale,
       sidebar: { label: 'Mes litiges', group: 'MESSAGES' } },
     { section: 'notifications', icon: Bell,
-      sidebar: { label: 'Mes notifications', group: 'MESSAGES' }, header: { label: 'Notifications', group: 'MESSAGES' } },
+      sidebar: { label: 'Mes notifications', group: 'MESSAGES' }, header: { label: 'Mes notifications', group: 'MESSAGES' } },
     { section: 'settings', icon: Settings,
       sidebar: { label: 'Paramètres', group: 'COMPTE' }, header: { label: 'Mon profil', group: 'COMPTE', id: 'profile' } },
   ],
@@ -84,7 +84,7 @@ export const NAV_ITEMS: Record<AuthUser['role'], NavItem[]> = {
     { section: 'notifications', icon: Bell,
       sidebar: { label: 'Notifications', group: 'MESSAGES' }, header: { label: 'Notifications', group: 'MESSAGES' } },
     { section: 'settings', icon: Settings,
-      sidebar: { label: 'Paramètres', group: 'PARAMÈTRES' }, header: { label: 'Mon profil', group: 'COMPTE', id: 'profile' } },
+      sidebar: { label: 'Paramètres', group: 'COMPTE' }, header: { label: 'Mon profil', group: 'COMPTE', id: 'profile' } },
   ],
 
   AGENCE: [
@@ -132,25 +132,25 @@ export const NAV_ITEMS: Record<AuthUser['role'], NavItem[]> = {
     { section: 'oneci-verification', icon: Fingerprint,
       sidebar: { label: 'Vérification ONECI', group: 'VALIDATION' } },
     { section: 'users', icon: Users,
-      sidebar: { label: 'Tous les utilisateurs', group: 'UTILISATEURS' } },
+      sidebar: { label: 'Tous les utilisateurs', group: 'GESTION' } },
     { section: 'certifications', icon: Award,
-      sidebar: { label: 'Certifications', group: 'CERTIFICATION' } },
-    { section: 'inventory-reports', icon: FileText,
-      sidebar: { label: 'Rapports existants', group: 'ÉTAT DES LIEUX' } },
+      sidebar: { label: 'Certifications', group: 'GESTION' } },
+    { section: 'documentation', icon: GraduationCap,
+      sidebar: { label: 'Centre de documentation', group: 'GESTION' } },
     { section: 'agents', icon: Users,
       sidebar: { label: 'Agents', group: 'MISSIONS' } },
     { section: 'missions', icon: MapPin,
       sidebar: { label: 'Missions', group: 'MISSIONS' } },
-    { section: 'documentation', icon: GraduationCap,
-      sidebar: { label: 'Centre de documentation', group: 'FORMATION' } },
-    { section: 'fraud-alerts', icon: ShieldAlert,
-      sidebar: { label: 'Alertes fraude', group: 'SÉCURITÉ' } },
+    { section: 'inventory-reports', icon: FileText,
+      sidebar: { label: 'Rapports existants', group: 'MISSIONS' } },
     { section: 'messaging', icon: MessageSquare,
       sidebar: { label: 'Messagerie', group: 'SUIVI' } },
     { section: 'sla-monitoring', icon: Clock,
       sidebar: { label: 'Suivi SLA', group: 'SUIVI' }, header: { label: 'Suivi SLA', group: 'SUIVI', id: 'sla' } },
     { section: 'litiges', icon: Scale,
       sidebar: { label: 'Litiges', group: 'SUIVI' } },
+    { section: 'fraud-alerts', icon: ShieldAlert,
+      sidebar: { label: 'Alertes fraude', group: 'SUIVI' } },
     { section: 'notifications', icon: Bell,
       sidebar: { label: 'Notifications', group: 'SUIVI' }, header: { label: 'Notifications', group: 'SUIVI' } },
     { section: 'settings', icon: Settings,
@@ -229,4 +229,83 @@ export function getUserMenuItems(role: AuthUser['role']): UserMenuItem[] {
       section: item.section,
       group: item.header!.group,
     }))
+}
+
+// ─── Breadcrumb support ─────────────────────────────────────────────────────
+
+// Sub-views reachable only by drilling into a list (not a sidebar item
+// themselves) — maps each to the sidebar item that should stay highlighted,
+// and whose label prefixes the breadcrumb trail, while the sub-view is open.
+export const detailToParent: Record<string, string> = {
+  'payment-detail': 'payments',
+  'application-detail': 'applications',
+  'visit-detail': 'my-visits',
+  'lease-detail': 'my-leases',
+  'tenant-detail': 'my-tenants',
+  'property-verify-detail': 'property-verifications',
+  'inventory-report-form': 'inventory-reports',
+  'rental-file': 'settings',
+  'owner-file': 'candidatures',
+  'rental-file-detail': 'dossier-validations',
+  'owner-file-detail': 'dossier-validations',
+  'agency-detail': 'dossier-validations',
+}
+
+// Human labels for dashboardSections that have no NAV_ITEMS entry (either
+// because they're a detail/sub-view, or a standalone view not linked from
+// any sidebar/header item) — keeps the breadcrumb from ever showing a raw
+// section id.
+const EXTRA_SECTION_LABELS: Record<string, string> = {
+  'rental-file': 'Mon dossier locatif',
+  'owner-file': 'Dossier propriétaire',
+  'rental-file-detail': 'Détail dossier locatif',
+  'owner-file-detail': 'Détail dossier propriétaire',
+  'agency-detail': 'Détail agence',
+  'payment-detail': 'Détail paiement',
+  'application-detail': 'Détail candidature',
+  'visit-detail': 'Détail visite',
+  'lease-detail': 'Détail bail',
+  'tenant-detail': 'Détail locataire',
+  'property-verify-detail': 'Détail vérification',
+  'inventory-report-form': 'État des lieux',
+  'rental-files-list': 'Dossiers locatifs',
+  'rental-files-queue': "File d'attente dossiers",
+  'reviews': 'Avis',
+  'history': 'Historique',
+  'trust-score': 'Score de confiance',
+  'renewals': 'Renouvellements',
+  'owner-validations': 'Validations propriétaires',
+  'owner-dossiers': 'Dossiers propriétaires',
+  'agency-validations': 'Validations agence',
+}
+
+export function getSectionLabel(role: AuthUser['role'], section: string): string {
+  if (section === 'overview') return 'Tableau de bord'
+  const items = NAV_ITEMS[role] ?? []
+  for (const item of items) {
+    if (item.section !== section) continue
+    if (item.sidebar) return item.sidebar.label
+    if (item.header) return item.header.label
+  }
+  return EXTRA_SECTION_LABELS[section] ?? section
+}
+
+export interface BreadcrumbCrumb { label: string; section?: string }
+
+export function getBreadcrumbTrail(role: AuthUser['role'], section: string): BreadcrumbCrumb[] {
+  if (section === 'overview') {
+    return [{ label: 'Tableau de bord' }]
+  }
+  const parentSection = detailToParent[section]
+  if (parentSection) {
+    return [
+      { label: 'Tableau de bord', section: 'overview' },
+      { label: getSectionLabel(role, parentSection), section: parentSection },
+      { label: getSectionLabel(role, section) },
+    ]
+  }
+  return [
+    { label: 'Tableau de bord', section: 'overview' },
+    { label: getSectionLabel(role, section) },
+  ]
 }

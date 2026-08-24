@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Bell, LogOut, Home, Menu, ArrowLeftRight, Building2, User as UserIcon, Info, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -12,14 +12,23 @@ import { Label } from '@/components/ui/label'
 import { AnimatedSheet } from '@/components/ui/sheet'
 import { useAuthStore } from '@/lib/auth-store'
 import { getRoleLabel, getRoleColor } from '@/lib/roles'
+import { getBreadcrumbTrail } from '@/lib/nav-config'
 import { cn } from '@/lib/utils'
 import { SidebarContent } from './sidebar'
 import { ThemeToggle, LiveClock } from '@/components/theme-toggle'
 import { useNotifications } from '@/hooks/use-notifications'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
 import { toast } from 'sonner'
 
 export function DashboardHeader() {
-  const { user, logout, setView, switchRole, setDashboardSection } = useAuthStore()
+  const { user, logout, setView, switchRole, setDashboardSection, dashboardSection } = useAuthStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [switchingRole, setSwitchingRole] = useState(false)
   const [roleSwitchModalOpen, setRoleSwitchModalOpen] = useState(false)
@@ -87,10 +96,27 @@ export function DashboardHeader() {
           >
             <Home className="size-5" />
           </button>
-          <div className="hidden sm:block">
-            <p className="text-sm text-muted-foreground">
-              Bienvenue, <span className="font-medium text-foreground">{user.firstName}</span>
-            </p>
+          <div className="hidden sm:block min-w-0">
+            <Breadcrumb>
+              <BreadcrumbList className="flex-nowrap">
+                {getBreadcrumbTrail(effectiveRole, dashboardSection).map((crumb, i, arr) => (
+                  <Fragment key={i}>
+                    {i > 0 && <BreadcrumbSeparator />}
+                    <BreadcrumbItem className="whitespace-nowrap">
+                      {i === arr.length - 1 || !crumb.section ? (
+                        <BreadcrumbPage className="text-sm font-medium">{crumb.label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink asChild>
+                          <button type="button" onClick={() => setDashboardSection(crumb.section!)} className="text-sm">
+                            {crumb.label}
+                          </button>
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                  </Fragment>
+                ))}
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
         </div>
 

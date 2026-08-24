@@ -627,38 +627,6 @@ export function AgenceOverview() {
         </motion.div>
       )}
 
-      {/* ─── Accès rapide ──────────────────────────────────────────────────── */}
-      <motion.div variants={itemVariants}>
-        <Card className="border-border">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
-              {[
-                { id: 'portfolio', label: 'Portfolio', icon: Building2, color: 'bg-orange-50 text-orange-600' },
-                { id: 'mandats', label: 'Mandats', icon: FileSignature, color: 'bg-emerald-50 text-emerald-600' },
-                { id: 'contracts', label: 'Contrats', icon: Home, color: 'bg-teal-50 text-teal-600' },
-                { id: 'candidatures', label: 'Candidatures', icon: User, color: 'bg-amber-50 text-amber-600' },
-                { id: 'visits', label: 'Visites', icon: Calendar, color: 'bg-brand-50 text-brand-600' },
-                { id: 'communication', label: 'Communication', icon: MessageSquare, color: 'bg-blue-50 text-blue-600' },
-                { id: 'finances', label: 'Finances', icon: CreditCard, color: 'bg-violet-50 text-violet-600' },
-              ].map((link) => {
-                const Icon = link.icon
-                return (
-                  <button
-                    key={link.id}
-                    onClick={() => setDashboardSection(link.id)}
-                    className="flex flex-col items-center gap-2 p-3 rounded-lg border border-border hover:bg-accent hover:shadow-sm transition-all"
-                  >
-                    <div className={`flex size-10 items-center justify-center rounded-lg ${link.color}`}>
-                      <Icon className="size-5" />
-                    </div>
-                    <span className="text-xs font-medium text-foreground text-center">{link.label}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
     </motion.div>
   )
 }
