@@ -727,12 +727,12 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="title" className="text-xs font-medium">Titre de l&apos;annonce <span className="text-red-400">*</span></Label>
+                <Label htmlFor="title" className="text-xs font-medium">Titre de l&apos;annonce <span className="text-red-500">*</span></Label>
                 <Input id="title" placeholder="Appartement F3 Cocody..." value={form.title} onChange={(e) => update('title', e.target.value)} className="h-9 text-sm" />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="description" className="text-xs font-medium">Description <span className="text-red-400">*</span></Label>
+                  <Label htmlFor="description" className="text-xs font-medium">Description <span className="text-red-500">*</span></Label>
                   <Button
                     type="button"
                     variant="ghost"
@@ -770,7 +770,7 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                 <div className="space-y-1.5 sm:col-span-1">
-                  <Label htmlFor="area" className="text-xs font-medium">Surface (m²) <span className="text-red-400">*</span></Label>
+                  <Label htmlFor="area" className="text-xs font-medium">Surface (m²) <span className="text-red-500">*</span></Label>
                   <Input id="area" type="number" placeholder="85" value={form.area} onChange={(e) => update('area', e.target.value)} className="h-9 text-sm" />
                 </div>
                 <div className="space-y-1.5 sm:col-span-1">
@@ -870,12 +870,12 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="address" className="text-xs font-medium">Adresse <span className="text-red-400">*</span></Label>
+                <Label htmlFor="address" className="text-xs font-medium">Adresse <span className="text-red-500">*</span></Label>
                 <Input id="address" placeholder="Riviera 3, Cocody" value={form.address} onChange={(e) => update('address', e.target.value)} className="h-9 text-sm" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="city" className="text-xs font-medium">Ville <span className="text-red-400">*</span></Label>
+                  <Label htmlFor="city" className="text-xs font-medium">Ville <span className="text-red-500">*</span></Label>
                   <SearchableSelect
                     options={CITIES.map((c) => ({ value: c.name, label: c.name }))}
                     value={form.city} onChange={(v) => { update('city', v); if (v && getCommunesForCity(v).length > 0) { if (!getCommunesForCity(v).includes(form.commune)) update('commune', '') } else update('commune', '') }}

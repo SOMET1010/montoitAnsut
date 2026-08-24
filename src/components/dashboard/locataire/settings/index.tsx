@@ -1121,7 +1121,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                   {/* First Name */}
                   <div className="space-y-1.5">
                     <Label htmlFor="firstName" className="text-xs font-medium text-foreground">
-                      Prénom <span className="text-red-400">*</span>
+                      Prénom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="firstName"
@@ -1134,7 +1134,7 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                   {/* Last Name */}
                   <div className="space-y-1.5">
                     <Label htmlFor="lastName" className="text-xs font-medium text-foreground">
-                      Nom <span className="text-red-400">*</span>
+                      Nom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="lastName"

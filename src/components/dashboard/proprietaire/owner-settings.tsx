@@ -676,7 +676,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="owner-firstName" className="text-xs font-medium text-foreground">
-                      Prénom <span className="text-red-400">*</span>
+                      Prénom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="owner-firstName"
@@ -688,7 +688,7 @@ export function OwnerSettings({ defaultTab, onTabConsumed }: { defaultTab?: stri
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="owner-lastName" className="text-xs font-medium text-foreground">
-                      Nom <span className="text-red-400">*</span>
+                      Nom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="owner-lastName"

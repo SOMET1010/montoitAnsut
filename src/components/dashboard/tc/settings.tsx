@@ -643,7 +643,7 @@ export function TcSettings() {
                   {/* First Name */}
                   <div className="space-y-1.5">
                     <Label htmlFor="tc-firstName" className="text-xs font-medium text-foreground">
-                      Prénom <span className="text-red-400">*</span>
+                      Prénom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="tc-firstName"
@@ -656,7 +656,7 @@ export function TcSettings() {
                   {/* Last Name */}
                   <div className="space-y-1.5">
                     <Label htmlFor="tc-lastName" className="text-xs font-medium text-foreground">
-                      Nom <span className="text-red-400">*</span>
+                      Nom <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="tc-lastName"
