@@ -11,14 +11,37 @@ import {
   SUPABASE_PASSWORD_PLACEHOLDER,
 } from '@/lib/supabase/email-auth'
 import { toAuthUser } from '@/lib/supabase/profile'
+import type { UserRole } from '@/lib/supabase/types'
+
+// Only these roles can be self-selected at registration. ADMIN and
+// TIERS_CONFIANCE are privileged roles created exclusively by an existing
+// admin — accepting them here would let anyone escalate privileges by
+// simply posting a different `role` value.
+const SELF_REGISTERABLE_ROLES: UserRole[] = ['LOCATAIRE', 'PROPRIETAIRE', 'AGENCE']
+
+function resolveRegistrationRole(requestedRole: unknown): UserRole | null {
+  if (!requestedRole) return 'LOCATAIRE'
+  if (typeof requestedRole !== 'string' || !SELF_REGISTERABLE_ROLES.includes(requestedRole as UserRole)) {
+    return null
+  }
+  return requestedRole as UserRole
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, firstName, lastName, phone, role, method } = await req.json()
+    const { email, password, firstName, lastName, phone, role: requestedRole, method } = await req.json()
 
     if (!firstName || !lastName) {
       return NextResponse.json(
         { error: 'Prénom et nom sont requis' },
+        { status: 400 }
+      )
+    }
+
+    const role = resolveRegistrationRole(requestedRole)
+    if (role === null) {
+      return NextResponse.json(
+        { error: 'Rôle invalide' },
         { status: 400 }
       )
     }

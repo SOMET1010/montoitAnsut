@@ -143,7 +143,7 @@ interface AuthActions {
     setDossierValidationFilter: (filter: string) => void
     updateUser: (partial: Partial<AuthUser>) => void
     setOnboardingCompleted: (completed: boolean) => void
-    switchRole: (newRole: AuthUser["role"]) => Promise<void>
+    switchRole: (newRole: AuthUser["role"], password: string) => Promise<void>
     checkAuth: () => Promise<void>
     seedData: () => Promise<void>
 }
@@ -619,14 +619,14 @@ export const useAuthStore = create<AuthState>()(
                         : state.user,
                 })),
 
-            switchRole: async newRole => {
+            switchRole: async (newRole, password) => {
                 set({ isLoading: true })
                 try {
                     const res = await apiFetch("/api/user/switch-role", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         credentials: "include",
-                        body: JSON.stringify({ role: newRole }),
+                        body: JSON.stringify({ role: newRole, password }),
                     })
                     const data = await res.json()
                     if (!res.ok)

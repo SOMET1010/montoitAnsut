@@ -45,7 +45,11 @@ const itemVariants = {
 // ── Main Settings Component ─────────────────────────────────────────────────
 
 export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: string; onTabConsumed?: () => void }) {
-  const { user, setDashboardSection, updateUser, switchRole } = useAuthStore()
+  const { user, setDashboardSection, updateUser, switchRole, logout } = useAuthStore()
+  const [deleteAccountModalOpen, setDeleteAccountModalOpen] = useState(false)
+  const [deleteAccountPassword, setDeleteAccountPassword] = useState('')
+  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(null)
+  const [deletingAccount, setDeletingAccount] = useState(false)
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [scoring, setScoring] = useState<ScoringData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -70,6 +74,8 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
   const [roleSwitchModalOpen, setRoleSwitchModalOpen] = useState(false)
   const [pendingRole, setPendingRole] = useState<'LOCATAIRE' | 'PROPRIETAIRE' | null>(null)
   const [roleSwitching, setRoleSwitching] = useState(false)
+  const [roleSwitchPassword, setRoleSwitchPassword] = useState('')
+  const [roleSwitchError, setRoleSwitchError] = useState<string | null>(null)
 
   // Form state
   const [formState, setFormState] = useState({
@@ -271,6 +277,27 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
       setPasswordSaving(false)
     }
   }, [currentPassword, newPassword, confirmPassword])
+
+  const handleDeleteAccount = useCallback(async () => {
+    setDeleteAccountError(null)
+    if (!deleteAccountPassword) {
+      setDeleteAccountError('Mot de passe requis')
+      return
+    }
+    setDeletingAccount(true)
+    try {
+      await authFetch('/api/user/account', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: deleteAccountPassword }),
+      })
+      await logout()
+      window.location.href = '/'
+    } catch (err) {
+      setDeleteAccountError(err instanceof Error ? err.message : 'Erreur lors de la suppression du compte')
+      setDeletingAccount(false)
+    }
+  }, [deleteAccountPassword, logout])
 
   // Revoke other sessions handler
   const handleRevokeOtherSessions = useCallback(async () => {
@@ -810,6 +837,8 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                 <button
                   onClick={() => {
                     setPendingRole(targetRole)
+                    setRoleSwitchPassword('')
+                    setRoleSwitchError(null)
                     setRoleSwitchModalOpen(true)
                   }}
                   className={cn(
@@ -1007,6 +1036,23 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                   <p className="text-[11px] text-muted-foreground text-center mt-3">
                     Vous pouvez revenir à votre rôle actuel à tout moment depuis les paramètres.
                   </p>
+
+                  <div className="mt-4 space-y-1.5">
+                    <Label htmlFor="settingsSwitchRolePassword" className="text-xs font-medium text-foreground">
+                      Confirmez avec votre mot de passe
+                    </Label>
+                    <Input
+                      id="settingsSwitchRolePassword"
+                      type="password"
+                      value={roleSwitchPassword}
+                      onChange={(e) => setRoleSwitchPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="h-9 text-sm"
+                    />
+                    {roleSwitchError && (
+                      <p className="text-xs text-red-600">{roleSwitchError}</p>
+                    )}
+                  </div>
                 </div>
 
                 <DialogFooter className="gap-2">
@@ -1023,20 +1069,22 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
                   </Button>
                   <Button
                     onClick={async () => {
-                      if (!pendingRole) return
+                      if (!pendingRole || !roleSwitchPassword) return
+                      setRoleSwitchError(null)
                       setRoleSwitching(true)
                       try {
-                        await switchRole(pendingRole)
+                        await switchRole(pendingRole, roleSwitchPassword)
                         setSuccess(`Mode ${pendingRole === 'LOCATAIRE' ? 'Locataire' : 'Propriétaire'} activé`)
                         setRoleSwitchModalOpen(false)
                         setPendingRole(null)
+                        setRoleSwitchPassword('')
                       } catch (err) {
-                        setError(err instanceof Error ? err.message : 'Erreur lors du changement de rôle')
+                        setRoleSwitchError(err instanceof Error ? err.message : 'Erreur lors du changement de rôle')
                       } finally {
                         setRoleSwitching(false)
                       }
                     }}
-                    disabled={roleSwitching}
+                    disabled={roleSwitching || !roleSwitchPassword}
                     className={cn(
                       pendingRole === 'LOCATAIRE'
                         ? 'bg-amber-500 hover:bg-amber-600 text-white'
@@ -1796,6 +1844,75 @@ export function SettingsSection({ defaultTab, onTabConsumed }: { defaultTab?: st
               </CardContent>
             </Card>
 
+            {/* Danger zone */}
+            <Card className="border-red-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-base font-semibold flex items-center gap-2 text-red-600">
+                  <AlertTriangle className="size-4" />
+                  Zone de danger
+                </CardTitle>
+                <CardDescription>
+                  Supprimer définitivement votre compte et vos données personnelles.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="border-red-200 text-red-600 hover:bg-red-50"
+                  onClick={() => { setDeleteAccountError(null); setDeleteAccountPassword(''); setDeleteAccountModalOpen(true) }}
+                >
+                  <Trash2 className="size-4 mr-2" />
+                  Supprimer mon compte
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Delete account confirmation modal */}
+            <Dialog open={deleteAccountModalOpen} onOpenChange={setDeleteAccountModalOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2 text-red-600">
+                    <AlertTriangle className="size-5" />
+                    Supprimer mon compte
+                  </DialogTitle>
+                  <DialogDescription>
+                    Cette action est irréversible. Vos données personnelles seront supprimées et vous serez déconnecté.
+                    {' '}Impossible si vous avez un bail actif ou en attente de signature.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-3 py-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="deleteAccountPassword" className="text-xs font-medium text-foreground">
+                      Confirmez avec votre mot de passe
+                    </Label>
+                    <Input
+                      id="deleteAccountPassword"
+                      type="password"
+                      value={deleteAccountPassword}
+                      onChange={(e) => setDeleteAccountPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="h-9 text-sm"
+                    />
+                  </div>
+                  {deleteAccountError && (
+                    <p className="text-xs text-red-600">{deleteAccountError}</p>
+                  )}
+                </div>
+                <DialogFooter className="gap-2 sm:gap-0">
+                  <Button variant="outline" onClick={() => setDeleteAccountModalOpen(false)} disabled={deletingAccount}>
+                    Annuler
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleDeleteAccount}
+                    disabled={deletingAccount || !deleteAccountPassword}
+                  >
+                    {deletingAccount ? <Loader2 className="size-4 mr-2 animate-spin" /> : <Trash2 className="size-4 mr-2" />}
+                    Supprimer définitivement
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
           </motion.div>
         )}

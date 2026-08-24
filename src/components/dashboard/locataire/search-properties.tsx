@@ -15,6 +15,10 @@ import {
   CalendarDays,
   Clock,
   MessageSquare,
+  BookmarkPlus,
+  Bookmark,
+  X,
+  Loader2,
 } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -72,6 +76,16 @@ interface PropertyItem {
     firstName: string
     lastName: string
   }
+}
+
+interface SavedSearch {
+  id: string
+  name: string
+  city: string | null
+  propertyType: string | null
+  minPrice: number | null
+  maxPrice: number | null
+  searchQuery: string | null
 }
 
 interface VisitDialogState {
@@ -200,6 +214,71 @@ export function SearchProperties() {
       setLoading(false)
     }
   }, [search, city, minPrice, maxPrice, propertyType])
+
+  // Saved searches
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([])
+  const [saveSearchOpen, setSaveSearchOpen] = useState(false)
+  const [saveSearchName, setSaveSearchName] = useState('')
+  const [savingSearch, setSavingSearch] = useState(false)
+
+  const fetchSavedSearches = useCallback(async () => {
+    if (!isAuthenticated) return
+    try {
+      const data = await authFetch<{ data: SavedSearch[] }>('/api/search-alerts')
+      setSavedSearches(data.data ?? [])
+    } catch {
+      setSavedSearches([])
+    }
+  }, [isAuthenticated])
+
+  useEffect(() => {
+    fetchSavedSearches()
+  }, [fetchSavedSearches])
+
+  const handleSaveSearch = useCallback(async () => {
+    if (!saveSearchName.trim() || savingSearch) return
+    setSavingSearch(true)
+    try {
+      await authFetch('/api/search-alerts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: saveSearchName.trim(),
+          city: city || undefined,
+          propertyType,
+          minPrice: minPrice || undefined,
+          maxPrice: maxPrice || undefined,
+          searchQuery: search || undefined,
+        }),
+      })
+      toast.success('Recherche enregistrée')
+      setSaveSearchOpen(false)
+      setSaveSearchName('')
+      fetchSavedSearches()
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Impossible d\'enregistrer la recherche')
+    } finally {
+      setSavingSearch(false)
+    }
+  }, [saveSearchName, savingSearch, city, propertyType, minPrice, maxPrice, search, fetchSavedSearches])
+
+  const handleApplySavedSearch = useCallback((saved: SavedSearch) => {
+    setSearch(saved.searchQuery || '')
+    setCity(saved.city || '')
+    setPropertyType(saved.propertyType || 'ALL')
+    setMinPrice(saved.minPrice ? String(saved.minPrice) : '')
+    setMaxPrice(saved.maxPrice ? String(saved.maxPrice) : '')
+    setTimeout(handleSearch, 0)
+  }, [handleSearch])
+
+  const handleDeleteSavedSearch = useCallback(async (id: string) => {
+    setSavedSearches((prev) => prev.filter((s) => s.id !== id))
+    try {
+      await authFetch(`/api/search-alerts/${id}`, { method: 'DELETE' })
+    } catch {
+      fetchSavedSearches()
+    }
+  }, [fetchSavedSearches])
 
   const handleViewProperty = (propertyId: string) => {
     setSelectedPropertyId(propertyId)
@@ -360,26 +439,99 @@ export function SearchProperties() {
                 onChange={(e) => setMaxPrice(e.target.value)}
               />
             </div>
-            <Button
-              onClick={handleSearch}
-              disabled={loading}
-              className="w-full bg-brand-500 hover:bg-brand-600 text-white h-11"
-            >
-              {loading ? (
-                <div className="flex items-center gap-2">
-                  <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Recherche...
-                </div>
-              ) : (
-                <>
-                  <Search className="size-4 mr-2" />
-                  Rechercher
-                </>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleSearch}
+                disabled={loading}
+                className="flex-1 bg-brand-500 hover:bg-brand-600 text-white h-11"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Recherche...
+                  </div>
+                ) : (
+                  <>
+                    <Search className="size-4 mr-2" />
+                    Rechercher
+                  </>
+                )}
+              </Button>
+              {isAuthenticated && (
+                <Button
+                  variant="outline"
+                  className="h-11 shrink-0"
+                  onClick={() => { setSaveSearchName(''); setSaveSearchOpen(true) }}
+                  title="Enregistrer cette recherche"
+                >
+                  <BookmarkPlus className="size-4" />
+                  <span className="hidden sm:inline ml-2">Enregistrer</span>
+                </Button>
               )}
-            </Button>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Saved searches */}
+      {isAuthenticated && savedSearches.length > 0 && (
+        <motion.div variants={itemVariants}>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+              <Bookmark className="size-3.5" />
+              Recherches enregistrées :
+            </span>
+            {savedSearches.map((saved) => (
+              <Badge
+                key={saved.id}
+                variant="outline"
+                className="pl-3 pr-1.5 py-1 gap-1.5 cursor-pointer hover:bg-brand-50 hover:border-brand-200"
+                onClick={() => handleApplySavedSearch(saved)}
+              >
+                {saved.name}
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleDeleteSavedSearch(saved.id) }}
+                  className="rounded-full hover:bg-muted p-0.5"
+                  aria-label={`Supprimer la recherche ${saved.name}`}
+                >
+                  <X className="size-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Save search dialog */}
+      <Dialog open={saveSearchOpen} onOpenChange={setSaveSearchOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <BookmarkPlus className="size-4" />
+              Enregistrer cette recherche
+            </DialogTitle>
+            <DialogDescription>
+              Retrouvez rapidement ces critères depuis vos recherches enregistrées.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            placeholder="Ex : Appartements à Cocody"
+            value={saveSearchName}
+            onChange={(e) => setSaveSearchName(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSaveSearch() }}
+            autoFocus
+          />
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setSaveSearchOpen(false)} disabled={savingSearch}>
+              Annuler
+            </Button>
+            <Button onClick={handleSaveSearch} disabled={!saveSearchName.trim() || savingSearch}>
+              {savingSearch ? <Loader2 className="size-4 mr-2 animate-spin" /> : <BookmarkPlus className="size-4 mr-2" />}
+              Enregistrer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Error */}
       {error && (

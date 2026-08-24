@@ -329,12 +329,12 @@ async function main() {
   } finally {
     if (!cleanupDone) {
       console.log('\n⚠️  Nettoyage d\'urgence...')
-      await supabase.from('payments').delete().eq('lease_id', leaseId).catch(() => {})
-      await supabase.from('leases').delete().eq('id', leaseId).catch(() => {})
-      await supabase.from('notifications').delete().eq('entity_id', applicationId).catch(() => {})
-      await supabase.from('applications').delete().eq('id', applicationId).catch(() => {})
-      await supabase.from('rental_files').delete().eq('id', rentalFileId).catch(() => {})
-      await supabase.from('properties').update({ rental_status: property.rental_status }).eq('id', property.id).catch(() => {})
+      await supabase.from('payments').delete().eq('lease_id', leaseId).then(() => {}, () => {})
+      await supabase.from('leases').delete().eq('id', leaseId).then(() => {}, () => {})
+      await supabase.from('notifications').delete().eq('entity_id', applicationId).then(() => {}, () => {})
+      await supabase.from('applications').delete().eq('id', applicationId).then(() => {}, () => {})
+      await supabase.from('rental_files').delete().eq('id', rentalFileId).then(() => {}, () => {})
+      await supabase.from('properties').update({ rental_status: property.rental_status }).eq('id', property.id).then(() => {}, () => {})
     }
   }
 

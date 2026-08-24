@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { resolveRequestUser } from '@/lib/auth/request-user'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { notify } from '@/lib/notify'
+import { getOrCreateConversation } from '@/lib/conversations'
 
 export async function POST(req: NextRequest) {
   try {
@@ -67,28 +68,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Ce compte n\'est plus actif' }, { status: 400 })
     }
 
-    const { data: existingConvs } = await admin
-      .from('conversations')
-      .select('id')
-      .or(`and(participant1_id.eq.${userId},participant2_id.eq.${actualRecipientId}),and(participant1_id.eq.${actualRecipientId},participant2_id.eq.${userId})`)
-
-    let convId: string
-    if (existingConvs && existingConvs.length > 0) {
-      convId = existingConvs[0].id
-    } else {
-      const { data: newConv, error: convError } = await admin
-        .from('conversations')
-        .insert({
-          participant1_id: userId,
-          participant2_id: actualRecipientId,
-          property_id: propertyId || null,
-        })
-        .select()
-        .single()
-
-      if (convError) throw convError
-      convId = newConv.id
-    }
+    const convId = await getOrCreateConversation(admin, userId, actualRecipientId, propertyId)
 
     if (propertyId) {
       const { data: msgProperty } = await admin
