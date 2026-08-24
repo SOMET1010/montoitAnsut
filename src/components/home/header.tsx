@@ -3,33 +3,12 @@
 import { useState } from 'react'
 import {
   Menu,
-  LayoutDashboard,
-  Heart,
-  Eye,
-  FileSignature,
-  FolderOpen,
   MessageSquare,
-  UserCircle,
   LogOut,
   Building2,
-  PlusCircle,
-  ClipboardCheck,
-  Bell,
-  Settings,
-  Users,
-  Shield,
-  AlertTriangle,
-  BarChart3,
-  BadgeCheck,
-  Clock,
   Home,
   Search,
   HelpCircle,
-  CreditCard,
-  Star,
-  Wrench,
-  History,
-  UserCheck,
   ChevronRight,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -46,8 +25,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { AnimatedSheet } from '@/components/ui/sheet'
-import { useAuthStore, type AppView, type AuthUser } from '@/lib/auth-store'
+import { useAuthStore, type AppView } from '@/lib/auth-store'
 import { getRoleLabel, getRoleColor as getRoleBadgeStyle } from '@/lib/roles'
+import { getUserMenuItems, type UserMenuItem } from '@/lib/nav-config'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
 import { usePaymentAlerts } from '@/hooks/use-payment-alerts'
@@ -59,79 +39,6 @@ const navLinks: { label: string; view: AppView; icon: React.ElementType }[] = [
   { label: 'FAQ', view: 'faq', icon: HelpCircle },
   { label: 'NOUS CONTACTER', view: 'nous-contacter', icon: MessageSquare },
 ]
-
-// ─── Dropdown menu items per role ────────────────────────────────────────────
-
-interface UserMenuItem {
-  id: string
-  label: string
-  icon: React.ElementType
-  section: string
-  group?: string
-}
-
-function getUserMenuItems(role: AuthUser['role']): UserMenuItem[] {
-  switch (role) {
-    case 'LOCATAIRE':
-      return [
-        { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'favorites', label: 'Mes favoris', icon: Heart, section: 'favorites', group: 'LOCATION' },
-        { id: 'applications', label: 'Mes candidatures', icon: UserCheck, section: 'applications', group: 'LOCATION' },
-        { id: 'visits', label: 'Mes visites', icon: Eye, section: 'my-visits', group: 'LOCATION' },
-        { id: 'leases', label: 'Mes locations', icon: Home, section: 'my-leases', group: 'LOCATION' },
-        { id: 'payments', label: 'Mes paiements', icon: CreditCard, section: 'payments', group: 'LOCATION' },
-        { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'messages', group: 'MESSAGES' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'MESSAGES' },
-        { id: 'profile', label: 'Mon profil', icon: UserCircle, section: 'settings', group: 'COMPTE' },
-      ]
-    case 'PROPRIETAIRE':
-      return [
-        { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'properties', label: 'Mes biens', icon: Building2, section: 'my-properties', group: 'MES BIENS' },
-        { id: 'add-property', label: 'Ajouter un bien', icon: PlusCircle, section: 'my-properties', group: 'MES BIENS' },
-        { id: 'visits', label: 'Demandes de visite', icon: Eye, section: 'visit-requests', group: 'LOCATION' },
-        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'candidatures', group: 'LOCATION' },
-        { id: 'leases', label: 'Mes baux', icon: FileSignature, section: 'my-leases', group: 'LOCATION' },
-        { id: 'payments', label: 'Paiements', icon: CreditCard, section: 'payments', group: 'LOCATION' },
-        { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'messages', group: 'MESSAGES' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'MESSAGES' },
-        { id: 'profile', label: 'Mon profil', icon: UserCircle, section: 'settings', group: 'COMPTE' },
-      ]
-    case 'AGENCE':
-      return [
-        { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'properties', label: 'Nos biens', icon: Building2, section: 'portfolio', group: 'NOS BIENS' },
-        { id: 'visits', label: 'Demandes de visite', icon: Eye, section: 'visits', group: 'LOCATION' },
-        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'candidatures', group: 'LOCATION' },
-        { id: 'leases', label: 'Nos baux', icon: FileSignature, section: 'contracts', group: 'LOCATION' },
-        { id: 'payments', label: 'Paiements', icon: CreditCard, section: 'finances', group: 'LOCATION' },
-        { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'communication', group: 'MESSAGES' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'MESSAGES' },
-        { id: 'profile', label: 'Profil agence', icon: UserCircle, section: 'settings', group: 'COMPTE' },
-      ]
-    case 'TIERS_CONFIANCE':
-      return [
-        { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'dossier-validations', label: 'Dossiers', icon: FolderOpen, section: 'dossier-validations', group: 'VALIDATION' },
-        { id: 'sla', label: 'Suivi SLA', icon: Clock, section: 'sla-monitoring', group: 'SUIVI' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'SUIVI' },
-        { id: 'profile', label: 'Mon profil', icon: UserCircle, section: 'settings', group: 'COMPTE' },
-      ]
-    case 'ADMIN':
-      return [
-        { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'users', label: 'Utilisateurs', icon: Users, section: 'users', group: 'GESTION' },
-        { id: 'properties', label: 'Modération biens', icon: Building2, section: 'properties-moderation', group: 'GESTION' },
-        { id: 'tc', label: 'Gestion TC', icon: Shield, section: 'tc-management', group: 'GESTION' },
-        { id: 'disputes', label: 'Litiges', icon: AlertTriangle, section: 'disputes', group: 'SUPERVISION' },
-        { id: 'reports', label: 'Rapports', icon: BarChart3, section: 'reports', group: 'SUPERVISION' },
-        { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'SUPERVISION' },
-        { id: 'profile', label: 'Paramètres', icon: Settings, section: 'settings', group: 'COMPTE' },
-      ]
-    default:
-      return []
-  }
-}
 
 // ─── User Avatar Dropdown (Desktop) ─────────────────────────────────────────
 
