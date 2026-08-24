@@ -2,17 +2,33 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Send, Trash2, Sparkles, GripVertical } from 'lucide-react'
+import { X, Send, Trash2, Sparkles, GripVertical, MapPin, ArrowRight, BedDouble, Mic, Square, Volume2, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { apiFetch } from '@/lib/capacitor'
+import { useAuthStore } from '@/lib/auth-store'
+
+interface PropertyResultCard {
+  id: string
+  title: string
+  price: number
+  commune: string | null
+  city: string
+  type: string
+  bedrooms: number | null
+  area: number
+  image: string | null
+}
 
 interface Message {
   id: string
   role: 'user' | 'assistant'
   content: string
   timestamp: Date
+  properties?: PropertyResultCard[]
+  mapImage?: string | null
+  mapLabel?: string | null
 }
 
 // Generate a stable session ID per browser session
@@ -36,6 +52,7 @@ const SUGGESTIONS = [
 ]
 
 export function SutaChatbot() {
+  const { setView, setSelectedPropertyId } = useAuthStore()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
@@ -48,6 +65,15 @@ export function SutaChatbot() {
   const [isDragging, setIsDragging] = useState(false)
   const dragStartPos = useRef({ x: 0, y: 0 })
   const chatPanelRef = useRef<HTMLDivElement>(null)
+
+  // Voice (Azure AI Speech)
+  const [isRecording, setIsRecording] = useState(false)
+  const [isTranscribing, setIsTranscribing] = useState(false)
+  const [playingMsgId, setPlayingMsgId] = useState<string | null>(null)
+  const [ttsLoadingMsgId, setTtsLoadingMsgId] = useState<string | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioChunksRef = useRef<Blob[]>([])
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null)
 
   // Initialize session ID on client
   useEffect(() => {
@@ -149,6 +175,9 @@ export function SutaChatbot() {
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
+        properties: data.properties,
+        mapImage: data.mapImage,
+        mapLabel: data.mapLabel,
       }
 
       setMessages((prev) => [...prev, assistantMessage])
@@ -169,6 +198,95 @@ export function SutaChatbot() {
     e.preventDefault()
     sendMessage(input)
   }
+
+  // ── Voice input (Azure AI Speech) ───────────────────────────────────────
+  const startRecording = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
+        : 'audio/webm'
+      const recorder = new MediaRecorder(stream, { mimeType })
+      audioChunksRef.current = []
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data)
+      }
+
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((track) => track.stop())
+        const blob = new Blob(audioChunksRef.current, { type: mimeType })
+        if (blob.size === 0) return
+
+        setIsTranscribing(true)
+        try {
+          const res = await apiFetch('/api/suta/speech-to-text', {
+            method: 'POST',
+            headers: { 'Content-Type': mimeType },
+            body: blob,
+            credentials: 'include',
+          })
+          const data = await res.json()
+          if (!res.ok || !data.text) throw new Error(data.error || 'Transcription impossible')
+          sendMessage(data.text)
+        } catch {
+          // Silently drop — voice input is best-effort, user can type instead
+        } finally {
+          setIsTranscribing(false)
+        }
+      }
+
+      mediaRecorderRef.current = recorder
+      recorder.start()
+      setIsRecording(true)
+    } catch {
+      // Mic permission denied or unavailable — nothing to do, user can type
+    }
+  }, [sendMessage])
+
+  const stopRecording = useCallback(() => {
+    mediaRecorderRef.current?.stop()
+    mediaRecorderRef.current = null
+    setIsRecording(false)
+  }, [])
+
+  const toggleRecording = useCallback(() => {
+    if (isRecording) stopRecording()
+    else startRecording()
+  }, [isRecording, startRecording, stopRecording])
+
+  // ── Voice output (Azure AI Speech) ──────────────────────────────────────
+  const playMessageAudio = useCallback(async (msg: Message) => {
+    if (playingMsgId === msg.id) {
+      audioPlayerRef.current?.pause()
+      setPlayingMsgId(null)
+      return
+    }
+
+    setTtsLoadingMsgId(msg.id)
+    try {
+      const res = await apiFetch('/api/suta/text-to-speech', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: msg.content }),
+        credentials: 'include',
+      })
+      if (!res.ok) throw new Error('TTS failed')
+
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      audioPlayerRef.current?.pause()
+      const audio = new Audio(url)
+      audioPlayerRef.current = audio
+      audio.onended = () => setPlayingMsgId(null)
+      setPlayingMsgId(msg.id)
+      await audio.play()
+    } catch {
+      // Voice playback is best-effort
+    } finally {
+      setTtsLoadingMsgId(null)
+    }
+  }, [playingMsgId])
 
   const clearConversation = async () => {
     try {
@@ -309,21 +427,90 @@ export function SutaChatbot() {
                     )}
 
                     {/* Bubble */}
-                    <div
-                      className={`max-w-[82%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed sm:max-w-[80%] sm:px-4 sm:py-2.5 sm:text-sm ${
-                        msg.role === 'user'
-                          ? 'bg-[#FF6C2F] text-white rounded-tr-sm'
-                          : 'bg-neutral-100 text-neutral-800 rounded-tl-sm'
-                      }`}
-                    >
-                      <div className="whitespace-pre-wrap break-words">
-                        {msg.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
-                          if (part.startsWith('**') && part.endsWith('**')) {
-                            return <strong key={i}>{part.slice(2, -2)}</strong>
-                          }
-                          return <span key={i}>{part}</span>
-                        })}
+                    <div className={`flex flex-col gap-2 max-w-[82%] sm:max-w-[80%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                      <div
+                        className={`rounded-2xl px-3 py-2 text-[13px] leading-relaxed sm:px-4 sm:py-2.5 sm:text-sm ${
+                          msg.role === 'user'
+                            ? 'bg-[#FF6C2F] text-white rounded-tr-sm'
+                            : 'bg-neutral-100 text-neutral-800 rounded-tl-sm'
+                        }`}
+                      >
+                        <div className="whitespace-pre-wrap break-words">
+                          {msg.content.split(/(\*\*.*?\*\*)/).map((part, i) => {
+                            if (part.startsWith('**') && part.endsWith('**')) {
+                              return <strong key={i}>{part.slice(2, -2)}</strong>
+                            }
+                            return <span key={i}>{part}</span>
+                          })}
+                        </div>
                       </div>
+
+                      {/* Listen to this reply (Azure AI Speech TTS) */}
+                      {msg.role === 'assistant' && msg.id !== 'welcome' && (
+                        <button
+                          onClick={() => playMessageAudio(msg)}
+                          disabled={ttsLoadingMsgId === msg.id}
+                          className="flex items-center gap-1 text-[10.5px] text-neutral-400 hover:text-[#FF6C2F] transition-colors px-1"
+                        >
+                          {ttsLoadingMsgId === msg.id ? (
+                            <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                          ) : (
+                            <Volume2 className={`h-2.5 w-2.5 ${playingMsgId === msg.id ? 'text-[#FF6C2F]' : ''}`} />
+                          )}
+                          {playingMsgId === msg.id ? 'Lecture...' : 'Écouter'}
+                        </button>
+                      )}
+
+                      {/* Map image (Azure Maps) */}
+                      {msg.mapImage && (
+                        <div className="w-full overflow-hidden rounded-xl border border-neutral-200">
+                          <img src={msg.mapImage} alt={msg.mapLabel || 'Carte'} className="w-full h-auto" />
+                          {msg.mapLabel && (
+                            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-neutral-50 text-[11px] text-neutral-600">
+                              <MapPin className="h-3 w-3 text-[#FF6C2F]" />
+                              {msg.mapLabel}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Property result cards */}
+                      {msg.properties && msg.properties.length > 0 && (
+                        <div className="w-full space-y-1.5">
+                          {msg.properties.map((p) => (
+                            <button
+                              key={p.id}
+                              onClick={() => {
+                                setSelectedPropertyId(p.id)
+                                setView('property-detail')
+                                setIsOpen(false)
+                              }}
+                              className="flex w-full items-center gap-2.5 rounded-xl border border-neutral-200 bg-white p-2 text-left hover:border-[#FF6C2F]/40 hover:bg-[#FF6C2F]/5 transition-colors"
+                            >
+                              <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-neutral-100">
+                                {p.image ? (
+                                  <img src={p.image} alt={p.title} className="h-full w-full object-cover" />
+                                ) : (
+                                  <div className="flex h-full w-full items-center justify-center text-neutral-300">
+                                    <MapPin className="h-4 w-4" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-[12px] font-semibold text-neutral-800">{p.title}</p>
+                                <div className="flex items-center gap-1.5 text-[10.5px] text-neutral-500">
+                                  <span className="truncate">{p.commune || p.city}</span>
+                                  {p.bedrooms !== null && (
+                                    <span className="flex items-center gap-0.5 shrink-0"><BedDouble className="h-2.5 w-2.5" />{p.bedrooms}</span>
+                                  )}
+                                </div>
+                                <p className="text-[11px] font-bold text-[#FF6C2F]">{p.price.toLocaleString('fr-FR')} F/mois</p>
+                              </div>
+                              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-neutral-300" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -371,10 +558,30 @@ export function SutaChatbot() {
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  placeholder="Posez votre question..."
-                  disabled={isLoading}
+                  placeholder={isRecording ? 'Je t\'écoute...' : isTranscribing ? 'Transcription...' : 'Posez votre question...'}
+                  disabled={isLoading || isRecording || isTranscribing}
                   className="flex-1 rounded-full border-neutral-200 bg-neutral-50 text-[13px] focus:border-[#FF6C2F] focus:ring-[#FF6C2F]/20 sm:text-sm"
                 />
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={toggleRecording}
+                  disabled={isLoading || isTranscribing}
+                  title={isRecording ? 'Arrêter l\'enregistrement' : 'Parler à SUTA'}
+                  className={`h-9 w-9 rounded-full flex-shrink-0 sm:h-10 sm:w-10 ${
+                    isRecording
+                      ? 'bg-red-500 hover:bg-red-600 text-white animate-pulse'
+                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600'
+                  }`}
+                >
+                  {isTranscribing ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin sm:h-4 sm:w-4" />
+                  ) : isRecording ? (
+                    <Square className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                  ) : (
+                    <Mic className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                  )}
+                </Button>
                 <Button
                   type="submit"
                   size="icon"

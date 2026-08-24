@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { resolveRequestUser } from '@/lib/auth/request-user'
 import { checkRateLimit } from '@/lib/rate-limiter'
+import { callAzureOpenAI, type AzureChatMessage } from '@/lib/azure-openai'
+import { SUTA_TOOLS, executeSutaTool, type ToolSideEffects } from '@/lib/suta-tools'
 
 const SUTA_SYSTEM_PROMPT = `Tu es SUTA, l'assistant IA de la plateforme Mon Toit (ANSUT), la plateforme de location immobilière en Côte d'Ivoire. Tu es chaleureux, professionnel et toujours prêt à aider.
 
@@ -72,51 +74,12 @@ Règles importantes :
 - Si la question ne concerne pas Mon Toit, redirige poliment vers les fonctionnalités de la plateforme
 - Utilise le tutoiement (tu/toi) pour être plus proche de l'utilisateur
 - Ne invente jamais de fonctionnalités qui n'existent pas sur la plateforme
-- Si tu ne connais pas la réponse exacte, oriente l'utilisateur vers le support ou la section appropriée de la plateforme`
+- Si tu ne connais pas la réponse exacte, oriente l'utilisateur vers le support ou la section appropriée de la plateforme
 
-// ── Azure OpenAI client ──────────────────────────────────────────────────────
-
-interface AzureChoice {
-  message: { content: string }
-}
-
-interface AzureResponse {
-  choices: AzureChoice[]
-}
-
-async function callAzureOpenAI(messages: Array<{ role: string; content: string }>): Promise<AzureResponse> {
-  const endpoint = process.env.VITE_AZURE_OPENAI_ENDPOINT
-  const apiKey = process.env.VITE_AZURE_OPENAI_API_KEY
-  const deployment = process.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME
-  const apiVersion = process.env.VITE_AZURE_OPENAI_API_VERSION || '2024-10-21'
-
-  if (!endpoint || !apiKey || !deployment) {
-    throw new Error('Azure OpenAI non configuré. Vérifiez les variables d\'environnement.')
-  }
-
-  const url = `${endpoint.replace(/\/+$/, '')}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'api-key': apiKey,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      messages,
-      max_tokens: 1024,
-      temperature: 0.7,
-    }),
-  })
-
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.error('[Azure OpenAI Error]', response.status, errorText)
-    throw new Error(`Azure OpenAI a répondu avec le statut ${response.status}`)
-  }
-
-  return response.json()
-}
+Outils disponibles :
+- Utilise "search_properties" dès que l'utilisateur décrit un bien qu'il cherche (type, commune, budget). Ne recopie jamais toi-même une liste de biens inventée : appelle toujours l'outil.
+- Utilise "show_location_map" quand l'utilisateur veut voir où se trouve un quartier ou un bien.
+- Après un appel d'outil, résume le résultat en une réponse naturelle et concise, sans détailler le format technique du résultat.`
 
 // In-memory conversation store (per session)
 const conversations = new Map<string, Array<{ role: 'assistant' | 'user'; content: string }>>()
@@ -176,20 +139,52 @@ export async function POST(req: NextRequest) {
       history = history.slice(-MAX_MESSAGES)
     }
 
-    const completion = await callAzureOpenAI([
+    const baseMessages: AzureChatMessage[] = [
       { role: 'system', content: SUTA_SYSTEM_PROMPT },
       ...history,
-    ])
+    ]
 
-    const aiResponse = completion.choices?.[0]?.message?.content || 'Désolé, je n\'ai pas pu générer une réponse. Veuillez réessayer.'
+    const completion = await callAzureOpenAI(baseMessages, { tools: SUTA_TOOLS })
+    const choice = completion.choices?.[0]
 
-    // Add AI response to history
+    let aiResponse: string
+    let sideEffects: ToolSideEffects = {}
+
+    if (choice?.finish_reason === 'tool_calls' && choice.message.tool_calls?.length) {
+      const toolCalls = choice.message.tool_calls
+
+      const toolMessages: AzureChatMessage[] = []
+      for (const call of toolCalls) {
+        const { resultForModel, sideEffects: effects } = await executeSutaTool(
+          call.function.name,
+          call.function.arguments
+        )
+        sideEffects = { ...sideEffects, ...effects }
+        toolMessages.push({ role: 'tool', tool_call_id: call.id, content: resultForModel })
+      }
+
+      const followUp = await callAzureOpenAI([
+        ...baseMessages,
+        { role: 'assistant', content: choice.message.content || '', tool_calls: toolCalls },
+        ...toolMessages,
+      ])
+
+      aiResponse = followUp.choices?.[0]?.message?.content || 'Voici ce que j\'ai trouvé.'
+    } else {
+      aiResponse = choice?.message?.content || 'Désolé, je n\'ai pas pu générer une réponse. Veuillez réessayer.'
+    }
+
+    // Add AI response to history (tool-call plumbing is not persisted —
+    // only the final natural-language answer, kept simple on purpose)
     history.push({ role: 'assistant', content: aiResponse })
     conversations.set(sessionId, history)
 
     return NextResponse.json({
       success: true,
       response: aiResponse,
+      properties: sideEffects.properties,
+      mapImage: sideEffects.mapImage,
+      mapLabel: sideEffects.mapLabel,
     })
   } catch (error) {
     console.error('[SUTA API Error]', error)

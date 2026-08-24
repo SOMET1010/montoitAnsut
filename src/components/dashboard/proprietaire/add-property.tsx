@@ -5,7 +5,7 @@ import {
   PlusCircle, ImagePlus, EyeOff, Video, X, Loader2,
   Upload, ArrowLeft, ArrowRight, CheckCircle2, MapPin, Home,
   FileText, Settings2, Save, Navigation, LocateFixed,
-  ChevronLeft, ChevronRight, Building2, Camera, DollarSign, Minus, Plus
+  ChevronLeft, ChevronRight, Building2, Camera, DollarSign, Minus, Plus, Sparkles
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -277,6 +277,40 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
 
   const update = (field: string, value: string | boolean) => {
     setForm((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const [generatingDescription, setGeneratingDescription] = useState(false)
+
+  const handleGenerateDescription = async () => {
+    if (!form.type || generatingDescription) return
+    setGeneratingDescription(true)
+    try {
+      const data = await authFetch<{ description: string }>('/api/properties/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: form.title || undefined,
+          type: form.type,
+          area: form.area || undefined,
+          bedrooms: form.bedrooms || undefined,
+          bathrooms: form.bathrooms || undefined,
+          city: form.city || undefined,
+          commune: form.commune || undefined,
+          isFurnished: form.isFurnished,
+          hasParking: form.hasParking,
+          hasGarden: form.hasGarden,
+          hasPool: form.hasPool,
+          hasBalcony: form.hasBalcony,
+          hasTerrace: form.hasTerrace,
+          hasKitchen: form.hasKitchen,
+        }),
+      })
+      update('description', data.description)
+    } catch (err) {
+      toast.error(err instanceof AuthError ? err.message : 'Impossible de générer la description')
+    } finally {
+      setGeneratingDescription(false)
+    }
   }
 
   // ── Load existing draft ────────────────────────────────────────────────────
@@ -697,7 +731,24 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
                 <Input id="title" placeholder="Appartement F3 Cocody..." value={form.title} onChange={(e) => update('title', e.target.value)} className="h-9 text-sm" />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="description" className="text-xs font-medium">Description <span className="text-red-400">*</span></Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="description" className="text-xs font-medium">Description <span className="text-red-400">*</span></Label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 gap-1.5 text-xs text-brand-600 hover:text-brand-700 hover:bg-brand-50 -mr-2"
+                    onClick={handleGenerateDescription}
+                    disabled={!form.type || generatingDescription}
+                  >
+                    {generatingDescription ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      <Sparkles className="size-3.5" />
+                    )}
+                    Générer avec l&apos;IA
+                  </Button>
+                </div>
                 <Textarea id="description" placeholder="Décrivez votre bien..." rows={4} value={form.description} onChange={(e) => update('description', e.target.value)} className="text-sm resize-none" />
               </div>
               <div className="space-y-1.5">
