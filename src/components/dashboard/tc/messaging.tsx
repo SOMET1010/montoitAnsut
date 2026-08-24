@@ -104,7 +104,7 @@ function getRoleBadge(role: string): { label: string; className: string } {
     case 'PROPRIETAIRE':
       return { label: 'Propriétaire', className: 'bg-emerald-100 text-emerald-700' }
     case 'AGENCE':
-      return { label: 'Agence', className: 'bg-teal-100 text-teal-700' }
+      return { label: 'Agence', className: 'bg-orange-100 text-orange-700' }
     case 'TIERS_CONFIANCE':
       return { label: 'TC', className: 'bg-orange-100 text-orange-700' }
     case 'ADMIN':

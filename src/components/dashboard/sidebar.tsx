@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { useAuthStore, type AuthUser } from '@/lib/auth-store'
+import { getRoleLabel, getRoleColor } from '@/lib/roles'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -260,28 +261,6 @@ export function getSidebarSections(role: AuthUser['role']): SidebarSection[] {
       ]
     default:
       return []
-  }
-}
-
-export function getRoleLabel(role: AuthUser['role']): string {
-  switch (role) {
-    case 'LOCATAIRE': return 'Locataire'
-    case 'PROPRIETAIRE': return 'Propriétaire'
-    case 'AGENCE': return 'Agence'
-    case 'TIERS_CONFIANCE': return 'Tiers de Confiance'
-    case 'ADMIN': return 'Administration'
-    default: return role
-  }
-}
-
-export function getRoleColor(role: AuthUser['role']): string {
-  switch (role) {
-    case 'LOCATAIRE': return 'bg-amber-100 text-amber-700'
-    case 'PROPRIETAIRE': return 'bg-emerald-100 text-emerald-700'
-    case 'AGENCE': return 'bg-orange-100 text-orange-700'
-    case 'TIERS_CONFIANCE': return 'bg-orange-100 text-orange-700'
-    case 'ADMIN': return 'bg-rose-100 text-rose-700'
-    default: return 'bg-neutral-100 text-neutral-700'
   }
 }
 

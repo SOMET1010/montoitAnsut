@@ -47,6 +47,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { AnimatedSheet } from '@/components/ui/sheet'
 import { useAuthStore, type AppView, type AuthUser } from '@/lib/auth-store'
+import { getRoleLabel, getRoleColor as getRoleBadgeStyle } from '@/lib/roles'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { cn } from '@/lib/utils'
 import { usePaymentAlerts } from '@/hooks/use-payment-alerts'
@@ -58,30 +59,6 @@ const navLinks: { label: string; view: AppView; icon: React.ElementType }[] = [
   { label: 'FAQ', view: 'faq', icon: HelpCircle },
   { label: 'NOUS CONTACTER', view: 'nous-contacter', icon: MessageSquare },
 ]
-
-// ─── Role label & color helpers ──────────────────────────────────────────────
-
-function getRoleLabel(role: AuthUser['role']): string {
-  switch (role) {
-    case 'LOCATAIRE': return 'Locataire'
-    case 'PROPRIETAIRE': return 'Propriétaire'
-    case 'AGENCE': return 'Agence'
-    case 'TIERS_CONFIANCE': return 'Tiers de Confiance'
-    case 'ADMIN': return 'Administration'
-    default: return role
-  }
-}
-
-function getRoleBadgeStyle(role: AuthUser['role']): string {
-  switch (role) {
-    case 'LOCATAIRE': return 'bg-amber-100 text-amber-700 border-amber-200'
-    case 'PROPRIETAIRE': return 'bg-emerald-100 text-emerald-700 border-emerald-200'
-    case 'AGENCE': return 'bg-teal-100 text-teal-700 border-teal-200'
-    case 'TIERS_CONFIANCE': return 'bg-orange-100 text-orange-700 border-orange-200'
-    case 'ADMIN': return 'bg-rose-100 text-rose-700 border-rose-200'
-    default: return 'bg-muted text-muted-foreground border-border'
-  }
-}
 
 // ─── Dropdown menu items per role ────────────────────────────────────────────
 
