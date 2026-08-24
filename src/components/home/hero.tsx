@@ -45,8 +45,8 @@ const fadeUp = {
   }),
 } as const
 
-function formatNumber(n: number): string {
-  return n.toLocaleString('fr-FR')
+function formatNumber(n: number | null | undefined): string {
+  return typeof n === 'number' && Number.isFinite(n) ? n.toLocaleString('fr-FR') : '—'
 }
 
 export function Hero() {
@@ -61,8 +61,14 @@ export function Hero() {
 
   useEffect(() => {
     apiFetch('/api/stats')
-      .then((res) => res.json())
-      .then((data) => setStats(data))
+      .then(async (res) => {
+        if (!res.ok) throw new Error('Stats request failed')
+        return res.json()
+      })
+      .then((data) => {
+        if (typeof data?.totalProperties !== 'number') throw new Error('Malformed stats response')
+        setStats(data)
+      })
       .catch(() => {
         setStats({ totalProperties: 0, monthlyVisitors: 0, newToday: 0, satisfactionRate: 0 })
       })

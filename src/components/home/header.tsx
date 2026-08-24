@@ -111,9 +111,9 @@ function getUserMenuItems(role: AuthUser['role']): UserMenuItem[] {
       return [
         { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
         { id: 'properties', label: 'Mes biens', icon: Building2, section: 'my-properties', group: 'MES BIENS' },
-        { id: 'add-property', label: 'Ajouter un bien', icon: PlusCircle, section: 'add-property', group: 'MES BIENS' },
+        { id: 'add-property', label: 'Ajouter un bien', icon: PlusCircle, section: 'my-properties', group: 'MES BIENS' },
         { id: 'visits', label: 'Demandes de visite', icon: Eye, section: 'visit-requests', group: 'LOCATION' },
-        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'rental-files', group: 'LOCATION' },
+        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'candidatures', group: 'LOCATION' },
         { id: 'leases', label: 'Mes baux', icon: FileSignature, section: 'my-leases', group: 'LOCATION' },
         { id: 'payments', label: 'Paiements', icon: CreditCard, section: 'payments', group: 'LOCATION' },
         { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'messages', group: 'MESSAGES' },
@@ -123,13 +123,12 @@ function getUserMenuItems(role: AuthUser['role']): UserMenuItem[] {
     case 'AGENCE':
       return [
         { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard, section: 'overview', group: 'ESPACE' },
-        { id: 'properties', label: 'Nos biens', icon: Building2, section: 'my-properties', group: 'NOS BIENS' },
-        { id: 'add-property', label: 'Ajouter un bien', icon: PlusCircle, section: 'add-property', group: 'NOS BIENS' },
-        { id: 'visits', label: 'Demandes de visite', icon: Eye, section: 'visit-requests', group: 'LOCATION' },
-        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'rental-files', group: 'LOCATION' },
-        { id: 'leases', label: 'Nos baux', icon: FileSignature, section: 'my-leases', group: 'LOCATION' },
-        { id: 'payments', label: 'Paiements', icon: CreditCard, section: 'payments', group: 'LOCATION' },
-        { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'messages', group: 'MESSAGES' },
+        { id: 'properties', label: 'Nos biens', icon: Building2, section: 'portfolio', group: 'NOS BIENS' },
+        { id: 'visits', label: 'Demandes de visite', icon: Eye, section: 'visits', group: 'LOCATION' },
+        { id: 'rental-files', label: 'Dossiers locatifs', icon: ClipboardCheck, section: 'candidatures', group: 'LOCATION' },
+        { id: 'leases', label: 'Nos baux', icon: FileSignature, section: 'contracts', group: 'LOCATION' },
+        { id: 'payments', label: 'Paiements', icon: CreditCard, section: 'finances', group: 'LOCATION' },
+        { id: 'messages', label: 'Messages', icon: MessageSquare, section: 'communication', group: 'MESSAGES' },
         { id: 'notifications', label: 'Notifications', icon: Bell, section: 'notifications', group: 'MESSAGES' },
         { id: 'profile', label: 'Profil agence', icon: UserCircle, section: 'settings', group: 'COMPTE' },
       ]

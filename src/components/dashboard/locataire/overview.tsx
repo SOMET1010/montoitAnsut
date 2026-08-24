@@ -512,7 +512,7 @@ export function LocataireOverview() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {theData.recommendedProperties.slice(0, 4).map((rec) => (
                   <div key={rec.id} className="flex gap-3 p-3 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                    onClick={() => { setSelectedItemId(rec.id); setDashboardSection('search') }}>
+                    onClick={() => { setSelectedItemId(rec.id); setDashboardSection('search-properties') }}>
                     <div className="size-16 rounded-lg bg-muted overflow-hidden shrink-0">
                       {rec.images?.[0]?.url ? (
                         <img src={rec.images[0].url} alt="" className="size-full object-cover" />
@@ -536,7 +536,7 @@ export function LocataireOverview() {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" size="sm" className="w-full mt-3 text-xs gap-1" onClick={() => setDashboardSection('search')}>
+              <Button variant="outline" size="sm" className="w-full mt-3 text-xs gap-1" onClick={() => setDashboardSection('search-properties')}>
                 Rechercher un logement <ChevronRight className="size-3" />
               </Button>
             </CardContent>
