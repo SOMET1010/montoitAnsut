@@ -103,6 +103,77 @@ export function generateOtpCode(length: number = 6): string {
   return code
 }
 
+// ─── Resilient request helper ────────────────────────────────────────────────────
+
+const ANSUT_TIMEOUT_MS = 8000
+const ANSUT_MAX_ATTEMPTS = 2
+const ANSUT_RETRY_DELAY_MS = 400
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * POST to the ANSUT API with a bounded timeout and a single retry on
+ * transient failures (network error or 5xx) — never retried on 4xx, since
+ * those are configuration/validation errors that won't fix themselves.
+ * This is what makes OTP delivery resilient to the API's occasional blips
+ * instead of failing outright on the first hiccup.
+ */
+async function postToAnsut(
+  path: string,
+  body: Record<string, unknown>,
+  logTag: string
+): Promise<MessagingResult> {
+  if (!ANSUT_BASE_URL) {
+    console.warn(`[${logTag}] ANSUT_API_BASE_URL not configured, skipping send`)
+    return { success: false, message: 'API ANSUT non configurée' }
+  }
+
+  let lastError: MessagingResult = { success: false, message: 'Erreur réseau' }
+
+  for (let attempt = 1; attempt <= ANSUT_MAX_ATTEMPTS; attempt++) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), ANSUT_TIMEOUT_MS)
+
+    try {
+      const response = await fetch(`${ANSUT_BASE_URL}${path}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      })
+      clearTimeout(timeout)
+
+      const data = await response.json().catch(() => null)
+
+      if (response.ok) {
+        console.log(`[${logTag}] ✅ Sent successfully (attempt ${attempt})`)
+        return { success: true, message: 'Envoyé avec succès', data }
+      }
+
+      console.error(`[${logTag}] ❌ Failed (attempt ${attempt}):`, response.status, data)
+      lastError = { success: false, message: 'Échec de l\'envoi', data }
+
+      // Only retry on server-side errors — a 4xx won't succeed on retry.
+      if (response.status < 500 || attempt === ANSUT_MAX_ATTEMPTS) {
+        return lastError
+      }
+    } catch (error) {
+      clearTimeout(timeout)
+      const isTimeout = error instanceof Error && error.name === 'AbortError'
+      console.error(`[${logTag}] ❌ ${isTimeout ? 'Timeout' : 'Network error'} (attempt ${attempt}):`, error)
+      lastError = { success: false, message: isTimeout ? 'Délai dépassé lors de l\'envoi' : 'Erreur réseau lors de l\'envoi' }
+    }
+
+    if (attempt < ANSUT_MAX_ATTEMPTS) {
+      await sleep(ANSUT_RETRY_DELAY_MS)
+    }
+  }
+
+  return lastError
+}
+
 // ─── SMS Sending ────────────────────────────────────────────────────────────────
 
 /**
@@ -111,12 +182,6 @@ export function generateOtpCode(length: number = 6): string {
  */
 export async function sendSms(params: SendSmsParams): Promise<MessagingResult> {
   const { to, text, dlrUrl } = params
-
-  if (!ANSUT_BASE_URL) {
-    console.warn('[ANSUT SMS] ANSUT_API_BASE_URL not configured, skipping SMS send')
-    return { success: false, message: 'API ANSUT non configurée' }
-  }
-
   const formattedTo = formatPhoneForAnsut(to)
 
   const body: Record<string, string> = {
@@ -131,26 +196,7 @@ export async function sendSms(params: SendSmsParams): Promise<MessagingResult> {
     body.dlrUrl = dlrUrl
   }
 
-  try {
-    const response = await fetch(`${ANSUT_BASE_URL}/SendSMS`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-
-    const data = await response.json().catch(() => null)
-
-    if (response.ok) {
-      console.log(`[ANSUT SMS] ✅ SMS sent successfully to ${formattedTo}`)
-      return { success: true, message: 'SMS envoyé avec succès', data }
-    } else {
-      console.error(`[ANSUT SMS] ❌ Failed to send SMS:`, response.status, data)
-      return { success: false, message: 'Échec de l\'envoi SMS', data }
-    }
-  } catch (error) {
-    console.error('[ANSUT SMS] ❌ Network error:', error)
-    return { success: false, message: 'Erreur réseau lors de l\'envoi SMS' }
-  }
+  return postToAnsut('/SendSMS', body, 'ANSUT SMS')
 }
 
 // ─── Email Sending ──────────────────────────────────────────────────────────────
@@ -161,11 +207,6 @@ export async function sendSms(params: SendSmsParams): Promise<MessagingResult> {
  */
 export async function sendEmail(params: SendEmailParams): Promise<MessagingResult> {
   const { to, subject, content, cc, bcc, isHtml = true } = params
-
-  if (!ANSUT_BASE_URL) {
-    console.warn('[ANSUT Email] ANSUT_API_BASE_URL not configured, skipping Email send')
-    return { success: false, message: 'API ANSUT non configurée' }
-  }
 
   const body: Record<string, unknown> = {
     to,
@@ -181,26 +222,7 @@ export async function sendEmail(params: SendEmailParams): Promise<MessagingResul
   if (cc) body.cc = cc
   if (bcc) body.bcc = bcc
 
-  try {
-    const response = await fetch(`${ANSUT_BASE_URL}/message/send`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-
-    const data = await response.json().catch(() => null)
-
-    if (response.ok) {
-      console.log(`[ANSUT Email] ✅ Email sent successfully to ${to}`)
-      return { success: true, message: 'Email envoyé avec succès', data }
-    } else {
-      console.error(`[ANSUT Email] ❌ Failed to send email:`, response.status, data)
-      return { success: false, message: 'Échec de l\'envoi email', data }
-    }
-  } catch (error) {
-    console.error('[ANSUT Email] ❌ Network error:', error)
-    return { success: false, message: 'Erreur réseau lors de l\'envoi email' }
-  }
+  return postToAnsut('/message/send', body, 'ANSUT Email')
 }
 
 // ─── OTP Templates ──────────────────────────────────────────────────────────────

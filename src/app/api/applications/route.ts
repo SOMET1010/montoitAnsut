@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { resolveRequestUser } from '@/lib/auth/request-user'
 import { notify } from '@/lib/notify'
+import { getOrCreateConversation } from '@/lib/conversations'
 
 function generateId() {
   return crypto.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
@@ -155,6 +156,11 @@ export async function POST(req: NextRequest) {
         entityId: appId,
       })
     }
+
+    // Ensure a conversation between tenant and owner exists from the start,
+    // so the owner can always reach the applicant (fixes "Contacter" not
+    // creating a conversation before a lease exists).
+    await getOrCreateConversation(supabase, userId, property.owner_id, propertyId)
 
     const resp = NextResponse.json({
       data: {

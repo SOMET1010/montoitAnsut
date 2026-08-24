@@ -145,7 +145,7 @@ export async function GET(req: NextRequest) {
         phone: string | null
         email: string | null
         role: string
-        properties: Array<{ id: string; title: string; city: string; leaseId: string }>
+        properties: Array<{ id: string; title: string; city: string; leaseId: string | null }>
       }>()
 
       ;(leases || []).forEach((lease: Record<string, unknown>) => {
@@ -173,6 +173,51 @@ export async function GET(req: NextRequest) {
           })
         }
       })
+
+      // Also include tenants who have applied to one of the owner's properties
+      // (candidature stage) — a lease may not exist yet, but the owner still
+      // needs to be able to reach the applicant from the candidature detail.
+      const { data: ownerProperties } = await supabase
+        .from('properties')
+        .select('id, title, city')
+        .eq('owner_id', userId)
+
+      const propertyMap = new Map<string, { id: string; title: string; city: string }>(
+        (ownerProperties || []).map((p: any) => [p.id, p])
+      )
+      const ownerPropertyIds = Array.from(propertyMap.keys())
+
+      if (ownerPropertyIds.length > 0) {
+        const { data: applications } = await supabase
+          .from('applications')
+          .select('property_id, tenant:users!applications_tenant_id_fkey(id, first_name, last_name, avatar_url, phone, email, role)')
+          .in('property_id', ownerPropertyIds)
+          .in('status', ['SUBMITTED', 'TC_REVIEW', 'VALIDATED', 'ACCEPTED'])
+
+        ;(applications || []).forEach((app: Record<string, unknown>) => {
+          const tenant = (app as any).tenant
+          const property = propertyMap.get((app as any).property_id)
+          if (!tenant) return
+          if (!tenantMap.has(tenant.id)) {
+            tenantMap.set(tenant.id, {
+              id: tenant.id,
+              firstName: tenant.first_name,
+              lastName: tenant.last_name,
+              avatarUrl: tenant.avatar_url,
+              phone: tenant.phone,
+              email: tenant.email,
+              role: tenant.role,
+              properties: [],
+            })
+          }
+          if (property) {
+            const existing = tenantMap.get(tenant.id)!.properties
+            if (!existing.find((p) => p.id === property.id)) {
+              existing.push({ id: property.id, title: property.title, city: property.city, leaseId: null })
+            }
+          }
+        })
+      }
 
       const resp = NextResponse.json({
         tenants: Array.from(tenantMap.values()),

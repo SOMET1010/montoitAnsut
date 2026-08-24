@@ -7,6 +7,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { AnimatedSheet } from '@/components/ui/sheet'
 import { useAuthStore } from '@/lib/auth-store'
 import { cn } from '@/lib/utils'
@@ -21,6 +23,8 @@ export function DashboardHeader() {
   const [switchingRole, setSwitchingRole] = useState(false)
   const [roleSwitchModalOpen, setRoleSwitchModalOpen] = useState(false)
   const [pendingRole, setPendingRole] = useState<'LOCATAIRE' | 'PROPRIETAIRE' | null>(null)
+  const [switchRolePassword, setSwitchRolePassword] = useState('')
+  const [switchRoleError, setSwitchRoleError] = useState<string | null>(null)
   const { unreadCount } = useNotifications()
 
   if (!user) return null
@@ -31,19 +35,23 @@ export function DashboardHeader() {
 
   const handleSwitchRole = (newRole: 'LOCATAIRE' | 'PROPRIETAIRE') => {
     setPendingRole(newRole)
+    setSwitchRolePassword('')
+    setSwitchRoleError(null)
     setRoleSwitchModalOpen(true)
   }
 
   const handleConfirmSwitchRole = async () => {
-    if (!pendingRole) return
+    if (!pendingRole || !switchRolePassword) return
+    setSwitchRoleError(null)
     setSwitchingRole(true)
     try {
-      await switchRole(pendingRole)
+      await switchRole(pendingRole, switchRolePassword)
       toast.success(`Mode ${getRoleLabel(pendingRole)} activé`)
       setRoleSwitchModalOpen(false)
       setPendingRole(null)
+      setSwitchRolePassword('')
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Erreur lors du changement de rôle')
+      setSwitchRoleError(err instanceof Error ? err.message : 'Erreur lors du changement de rôle')
     } finally {
       setSwitchingRole(false)
     }
@@ -326,6 +334,25 @@ export function DashboardHeader() {
             <p className="text-[11px] text-muted-foreground text-center mt-3">
               Vous pouvez revenir à votre rôle actuel à tout moment depuis les paramètres.
             </p>
+
+            <div className="mt-4 space-y-1.5">
+              <Label htmlFor="switchRolePassword" className="text-xs font-medium text-foreground">
+                Confirmez avec votre mot de passe
+              </Label>
+              <Input
+                id="switchRolePassword"
+                type="password"
+                value={switchRolePassword}
+                onChange={(e) => setSwitchRolePassword(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleConfirmSwitchRole() }}
+                placeholder="••••••••"
+                className="h-9 text-sm"
+                autoFocus
+              />
+              {switchRoleError && (
+                <p className="text-xs text-red-600">{switchRoleError}</p>
+              )}
+            </div>
           </div>
 
           <DialogFooter className="gap-2">
@@ -342,7 +369,7 @@ export function DashboardHeader() {
             </Button>
             <Button
               onClick={handleConfirmSwitchRole}
-              disabled={switchingRole}
+              disabled={switchingRole || !switchRolePassword}
               className={cn(
                 pendingRole === 'LOCATAIRE'
                   ? 'bg-amber-500 hover:bg-amber-600 text-white'

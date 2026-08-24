@@ -56,6 +56,7 @@ import { Separator } from '@/components/ui/separator'
 import { useAuthStore } from '@/lib/auth-store'
 import { authFetch, AuthError } from '@/lib/auth-fetch'
 import { useRealtimeRentalFiles } from '@/hooks/use-realtime-rental-files'
+import { QuickContactDialog } from '@/components/messaging/quick-contact-dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -718,15 +719,22 @@ export function EnhancedRentalFiles() {
                               <span className="hidden lg:inline">Supprimer le bail</span>
                             </Button>
                           )}
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-8 gap-1 text-muted-foreground hover:text-foreground"
-                            onClick={() => setDashboardSection('messages')}
-                          >
-                            <MessageSquare className="size-3.5" />
-                            <span className="hidden lg:inline">Contacter</span>
-                          </Button>
+                          <QuickContactDialog
+                            recipientId={rf.tenant.id}
+                            recipientName={`${rf.tenant.firstName} ${rf.tenant.lastName}`}
+                            propertyId={rf.leases[0]?.property?.id}
+                            onSent={() => setDashboardSection('messages')}
+                            trigger={
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-8 gap-1 text-muted-foreground hover:text-foreground"
+                              >
+                                <MessageSquare className="size-3.5" />
+                                <span className="hidden lg:inline">Contacter</span>
+                              </Button>
+                            }
+                          />
                         </div>
                       </div>
                     </div>
@@ -1258,17 +1266,18 @@ export function EnhancedRentalFiles() {
                           <XCircle className="size-4 sm:size-3.5" />
                           Refuser
                         </Button>
-                        <Button
-                          variant="outline"
-                          className="flex-1 gap-1.5 h-11 sm:h-9"
-                          onClick={() => {
-                            setProfileDialogOpen(false)
-                            setDashboardSection('messages')
-                          }}
-                        >
-                          <MessageSquare className="size-4 sm:size-3.5" />
-                          Contacter
-                        </Button>
+                        <QuickContactDialog
+                          recipientId={selectedTenant.tenant.id}
+                          recipientName={`${selectedTenant.tenant.firstName} ${selectedTenant.tenant.lastName}`}
+                          propertyId={selectedTenant.leases[0]?.property?.id}
+                          onSent={() => { setProfileDialogOpen(false); setDashboardSection('messages') }}
+                          trigger={
+                            <Button variant="outline" className="flex-1 gap-1.5 h-11 sm:h-9">
+                              <MessageSquare className="size-4 sm:size-3.5" />
+                              Contacter
+                            </Button>
+                          }
+                        />
                       </div>
                     </>
                   )}
@@ -1290,17 +1299,18 @@ export function EnhancedRentalFiles() {
                           <Trash2 className="size-4 sm:size-3.5" />
                           Supprimer le bail
                         </Button>
-                        <Button
-                          variant="outline"
-                          className="flex-1 gap-1.5 h-11 sm:h-9"
-                          onClick={() => {
-                            setProfileDialogOpen(false)
-                            setDashboardSection('messages')
-                          }}
-                        >
-                          <MessageSquare className="size-4 sm:size-3.5" />
-                          Contacter
-                        </Button>
+                        <QuickContactDialog
+                          recipientId={selectedTenant.tenant.id}
+                          recipientName={`${selectedTenant.tenant.firstName} ${selectedTenant.tenant.lastName}`}
+                          propertyId={selectedTenant.leases[0]?.property?.id}
+                          onSent={() => { setProfileDialogOpen(false); setDashboardSection('messages') }}
+                          trigger={
+                            <Button variant="outline" className="flex-1 gap-1.5 h-11 sm:h-9">
+                              <MessageSquare className="size-4 sm:size-3.5" />
+                              Contacter
+                            </Button>
+                          }
+                        />
                       </div>
                     </>
                   )}
