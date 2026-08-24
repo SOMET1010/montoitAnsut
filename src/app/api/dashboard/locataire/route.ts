@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { resolveRequestUser } from '@/lib/auth/request-user'
+import { getEmbeddings, cosineSimilarity, isEmbeddingsConfigured } from '@/lib/azure-embeddings'
+
+function propertyToEmbeddingText(p: { type: string; commune: string | null; city: string; price: number; title: string; description: string | null }): string {
+  return `${p.type}, ${p.commune || p.city}, ${p.price} FCFA/mois. ${p.title}. ${p.description || ''}`.slice(0, 500)
+}
 
 export async function GET(req: NextRequest) {
   const auth = await resolveRequestUser(req)
@@ -115,55 +120,116 @@ export async function GET(req: NextRequest) {
       (admin as any).from('notification_preferences').select('*').eq('user_id', userId).then((r: any) => r.data ?? ([] as any[])),
     ])
 
-    // Fetch recommended properties (similar to the user's current lease property)
+    // Fetch recommended properties — semantically matched via embeddings
+    // when Azure OpenAI Embeddings is configured, falling back to a plain
+    // commune/city match otherwise (same behavior as before).
     let recommendedProperties: any[] = []
     const primaryLease = (rawActiveLeases ?? [])[0]
+    const excludePropertyIds = new Set<string>()
+    if (primaryLease?.property_id) excludePropertyIds.add(primaryLease.property_id)
+
+    let preferenceText: string | null = null
+    let anchorCommune: string | null = null
+    let anchorCity: string | null = null
+
     if (primaryLease?.property_id) {
       const { data: leaseProp } = await (admin as any)
         .from('properties')
-        .select('city, commune, type, price')
+        .select('title, description, city, commune, type, price')
         .eq('id', primaryLease.property_id)
         .single()
-        if (leaseProp) {
-        const leaseCommune = (leaseProp as any).commune
-        const leaseCity = (leaseProp as any).city
-        let recQuery: any = (admin as any)
+      if (leaseProp) {
+        anchorCommune = (leaseProp as any).commune
+        anchorCity = (leaseProp as any).city
+        preferenceText = propertyToEmbeddingText(leaseProp as any)
+      }
+    } else {
+      // No active lease yet — use favorited properties as the preference signal
+      const favIds = [...new Set((allFavorites ?? []).map((f: any) => f.property_id))] as string[]
+      favIds.forEach((id) => excludePropertyIds.add(id))
+      if (favIds.length > 0) {
+        const { data: favProps } = await (admin as any)
           .from('properties')
-          .select('*')
+          .select('title, description, city, commune, type, price')
+          .in('id', favIds.slice(0, 5))
+        if (favProps && favProps.length > 0) {
+          preferenceText = favProps.map((p: any) => propertyToEmbeddingText(p)).join(' ').slice(0, 800)
+          anchorCommune = favProps[0].commune
+          anchorCity = favProps[0].city
+        }
+      }
+    }
+
+    if (preferenceText) {
+      const candidateFields = 'id, title, description, type, price, city, commune, bedrooms, area'
+      let candQuery: any = (admin as any)
+        .from('properties')
+        .select(candidateFields)
+        .eq('status', 'ACTIVE')
+        .eq('rental_status', 'disponible')
+        .neq('owner_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(24)
+      if (anchorCommune) candQuery = candQuery.eq('commune', anchorCommune)
+      else if (anchorCity) candQuery = candQuery.eq('city', anchorCity)
+
+      const { data: candidatesRaw } = await candQuery
+      let candidates: any[] = (candidatesRaw ?? []).filter((p: any) => !excludePropertyIds.has(p.id))
+
+      // Not enough local matches — broaden to the most recent available properties
+      if (candidates.length < 6) {
+        const { data: broader } = await (admin as any)
+          .from('properties')
+          .select(candidateFields)
           .eq('status', 'ACTIVE')
+          .eq('rental_status', 'disponible')
           .neq('owner_id', userId)
-          .neq('id', primaryLease.property_id)
-          .limit(6)
-
-        if (leaseCommune) {
-          recQuery = recQuery.eq('commune', leaseCommune)
-        } else if (leaseCity) {
-          recQuery = recQuery.eq('city', leaseCity)
+          .order('created_at', { ascending: false })
+          .limit(24)
+        const seen = new Set(candidates.map((c: any) => c.id))
+        for (const p of (broader ?? []) as any[]) {
+          if (!excludePropertyIds.has(p.id) && !seen.has(p.id)) {
+            candidates.push(p)
+            seen.add(p.id)
+          }
         }
+      }
+      candidates = candidates.slice(0, 24)
 
-        const { data: recs } = await (recQuery as any)
-        const recsArray: any[] = recs ?? []
-        if (recsArray.length > 0) {
-          const recPropIds = recsArray.map(p => p.id)
-          const { data: recImgs } = await admin
-            .from('property_images')
-            .select('url, property_id')
-            .in('property_id', recPropIds)
-            .order('order', { ascending: true })
-          const recImgMap = groupBy(recImgs ?? [], 'property_id')
-
-          recommendedProperties = recsArray.map(p => ({
-            id: p.id,
-            title: p.title,
-            type: p.type,
-            price: p.price,
-            city: p.city,
-            commune: p.commune,
-            bedrooms: p.bedrooms,
-            area: p.area,
-            images: (recImgMap.get(p.id) ?? []).slice(0, 1).map((i: any) => ({ url: i.url })),
-          }))
+      let ranked = candidates
+      if (candidates.length > 0 && isEmbeddingsConfigured()) {
+        try {
+          const candidateTexts = candidates.map((p: any) => propertyToEmbeddingText(p))
+          const [prefEmbedding, ...candEmbeddings] = await getEmbeddings([preferenceText, ...candidateTexts])
+          const scored = candidates.map((p: any, i: number) => ({ p, score: cosineSimilarity(prefEmbedding, candEmbeddings[i]) }))
+          scored.sort((a, b) => b.score - a.score)
+          ranked = scored.map((s) => s.p)
+        } catch (embErr) {
+          console.error('[Dashboard locataire] Embeddings ranking failed, falling back to recency order:', embErr)
         }
+      }
+
+      const top = ranked.slice(0, 6)
+      if (top.length > 0) {
+        const recPropIds = top.map((p: any) => p.id)
+        const { data: recImgs } = await admin
+          .from('property_images')
+          .select('url, property_id')
+          .in('property_id', recPropIds)
+          .order('order', { ascending: true })
+        const recImgMap = groupBy(recImgs ?? [], 'property_id')
+
+        recommendedProperties = top.map((p: any) => ({
+          id: p.id,
+          title: p.title,
+          type: p.type,
+          price: p.price,
+          city: p.city,
+          commune: p.commune,
+          bedrooms: p.bedrooms,
+          area: p.area,
+          images: (recImgMap.get(p.id) ?? []).slice(0, 1).map((i: any) => ({ url: i.url })),
+        }))
       }
     }
 
