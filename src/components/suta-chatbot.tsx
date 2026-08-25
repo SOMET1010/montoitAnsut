@@ -552,7 +552,7 @@ export function SutaChatbot() {
             </ScrollArea>
 
             {/* Input */}
-            <form onSubmit={handleSubmit} className="border-t border-border px-3 py-2 sm:px-4 sm:py-3">
+            <form onSubmit={handleSubmit} className="border-t border-border px-3 py-2 sm:px-4 sm:py-3 safe-area-bottom">
               <div className="flex items-center gap-2">
                 <Input
                   ref={inputRef}
