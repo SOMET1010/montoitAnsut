@@ -788,6 +788,7 @@ export function CertificationsManagement() {
                     size="sm"
                     variant="ghost"
                     className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600"
+                    aria-label="Effacer l'utilisateur sélectionné"
                     onClick={() => setCreateForm((prev) => ({ ...prev, userId: '' }))}
                   >
                     <X className="size-3.5" />

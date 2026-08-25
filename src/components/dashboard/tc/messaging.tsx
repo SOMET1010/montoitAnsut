@@ -586,7 +586,7 @@ export function TcMessaging() {
                         {getRoleBadge(searchResults.find((r) => r.id === newRecipientId)?.role || '').label}
                       </Badge>
                     )}
-                    <button onClick={() => setNewRecipientId('')} className="ml-auto">
+                    <button onClick={() => setNewRecipientId('')} aria-label="Effacer le destinataire sélectionné" className="ml-auto">
                       <X className="size-4 text-muted-foreground hover:text-foreground" />
                     </button>
                   </div>
@@ -944,6 +944,7 @@ export function TcMessaging() {
                             )}
                             <button
                               onClick={() => removePendingFile(i)}
+                              aria-label="Retirer la pièce jointe"
                               className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <X className="size-3" />
@@ -967,6 +968,7 @@ export function TcMessaging() {
                         variant="outline"
                         onClick={() => fileInputRef.current?.click()}
                         disabled={sending}
+                        aria-label="Joindre un fichier"
                         className="shrink-0"
                       >
                         <Paperclip className="size-4" />
@@ -988,6 +990,7 @@ export function TcMessaging() {
                         size="icon"
                         onClick={handleSendMessage}
                         disabled={(!messageText.trim() && pendingFiles.length === 0) || sending}
+                        aria-label="Envoyer le message"
                         className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0"
                       >
                         {sending ? (

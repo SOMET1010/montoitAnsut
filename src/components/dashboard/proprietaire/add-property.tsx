@@ -653,7 +653,7 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 sm:space-y-6">
       {/* ── Header ────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => { if (form.title || form.description || form.address || form.city) handleSaveDraft(true); onCancel?.() }} className="shrink-0 size-9">
+        <Button variant="ghost" size="icon" onClick={() => { if (form.title || form.description || form.address || form.city) handleSaveDraft(true); onCancel?.() }} aria-label="Retour" className="shrink-0 size-9">
           <ArrowLeft className="size-4" />
         </Button>
         <div className="min-w-0 flex-1">

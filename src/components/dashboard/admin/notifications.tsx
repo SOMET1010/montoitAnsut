@@ -306,7 +306,9 @@ export function AdminNotifications() {
                               <Check className="size-3.5" />
                             </Button>
                           ) : (
-                            <Mail className="size-3.5 text-muted-foreground cursor-pointer" onClick={() => { if (notification.actionUrl) handleMarkAsRead(notification) }} />
+                            <Button size="icon" variant="ghost" className="size-7" aria-label="Notification lue" onClick={() => { if (notification.actionUrl) handleMarkAsRead(notification) }}>
+                              <Mail className="size-3.5 text-muted-foreground" />
+                            </Button>
                           )}
                         </div>
                       </div>

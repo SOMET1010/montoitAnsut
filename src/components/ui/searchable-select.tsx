@@ -94,7 +94,7 @@ export function SearchableSelect({
               className="flex h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
             {search && (
-              <button type="button" onClick={() => setSearch('')} className="p-0.5">
+              <button type="button" onClick={() => setSearch('')} aria-label="Effacer la recherche" className="p-0.5">
                 <X className="size-3.5 text-muted-foreground" />
               </button>
             )}

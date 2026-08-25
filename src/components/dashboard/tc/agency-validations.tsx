@@ -374,13 +374,13 @@ export function AgencyValidations({ showHeaderAndStats = true }: { showHeaderAnd
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
-                        <Button size="sm" variant="ghost" className="text-green-600 h-8 w-8 p-0" onClick={() => handleAction(doc.id, 'APPROVE')} disabled={actionLoading === doc.id}>
+                        <Button size="sm" variant="ghost" className="text-green-600 h-8 w-8 p-0" onClick={() => handleAction(doc.id, 'APPROVE')} disabled={actionLoading === doc.id} aria-label="Approuver">
                           <Check className="size-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" className="text-red-600 h-8 w-8 p-0" onClick={() => setRejectId(doc.id)} disabled={actionLoading === doc.id}>
+                        <Button size="sm" variant="ghost" className="text-red-600 h-8 w-8 p-0" onClick={() => setRejectId(doc.id)} disabled={actionLoading === doc.id} aria-label="Rejeter">
                           <X className="size-4" />
                         </Button>
-                        <Button size="sm" variant="ghost" className="text-amber-600 h-8 w-8 p-0" onClick={() => setRequestInfoId(doc.id)} disabled={actionLoading === doc.id}>
+                        <Button size="sm" variant="ghost" className="text-amber-600 h-8 w-8 p-0" onClick={() => setRequestInfoId(doc.id)} disabled={actionLoading === doc.id} aria-label="Demander des informations complémentaires">
                           <MessageSquare className="size-4" />
                         </Button>
                       </div>

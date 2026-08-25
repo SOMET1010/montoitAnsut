@@ -241,6 +241,7 @@ export function AgenceCommunication() {
                           </div>
                         )}
                         <button onClick={() => { URL.revokeObjectURL(pf.preview); setPendingFiles((prev) => prev.filter((_, j) => j !== i)) }}
+                          aria-label="Retirer la pièce jointe"
                           className="absolute -top-1 -right-1 size-4 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <X className="size-2.5" />
                         </button>
@@ -254,12 +255,12 @@ export function AgenceCommunication() {
                     setPendingFiles((prev) => [...prev, ...files])
                     e.target.value = ''
                   }} className="hidden" />
-                  <Button size="icon" variant="outline" onClick={() => fileInputRef.current?.click()} className="shrink-0">
+                  <Button size="icon" variant="outline" onClick={() => fileInputRef.current?.click()} aria-label="Joindre un fichier" className="shrink-0">
                     <Paperclip className="size-4" />
                   </Button>
                   <Input placeholder="Votre message..." value={newMessage} onChange={(e) => setNewMessage(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage()} />
-                  <Button onClick={sendMessage} className="bg-[#FF6C2F] hover:bg-[#e55e27] text-white shrink-0" size="icon"
+                  <Button onClick={sendMessage} aria-label="Envoyer le message" className="bg-primary hover:bg-primary/90 text-primary-foreground shrink-0" size="icon"
                     disabled={!newMessage.trim() && pendingFiles.length === 0}>
                     <Send className="size-4" />
                   </Button>

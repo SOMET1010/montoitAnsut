@@ -586,6 +586,7 @@ export function SutaChatbot() {
                   type="submit"
                   size="icon"
                   disabled={!input.trim() || isLoading}
+                  aria-label="Envoyer le message"
                   className="h-9 w-9 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground flex-shrink-0 sm:h-10 sm:w-10"
                 >
                   <Send className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

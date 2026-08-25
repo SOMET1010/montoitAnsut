@@ -307,6 +307,7 @@ export function OwnerDossierValidations() {
                             variant="ghost"
                             size="icon"
                             className="size-7"
+                            aria-label="Prévisualiser le document"
                             onClick={() => { setPreviewDoc({ url: doc.url, name: doc.name, type: doc.type }); setPreviewOpen(true) }}
                           >
                             <Eye className="size-3.5" />

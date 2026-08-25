@@ -220,10 +220,10 @@ export function LocataireOverview() {
                   <p className="text-xs text-muted-foreground">{alert.message}</p>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setDashboardSection(alert.section as any)}>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" aria-label="Voir le détail" onClick={() => setDashboardSection(alert.section as any)}>
                     <ExternalLink className="size-3.5" />
                   </Button>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setDismissedAlerts(prev => new Set([...prev, alert.title]))}>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" aria-label="Ignorer cette alerte" onClick={() => setDismissedAlerts(prev => new Set([...prev, alert.title]))}>
                     <X className="size-3.5" />
                   </Button>
                 </div>

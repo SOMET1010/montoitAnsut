@@ -424,6 +424,7 @@ export function PropertyVerifications() {
                           className="bg-green-600 hover:bg-green-700 text-white gap-1"
                           onClick={() => handleApprove(property.id)}
                           disabled={actionLoading === property.id}
+                          aria-label="Approuver"
                         >
                           {actionLoading === property.id ? (
                             <Loader2 className="size-4 animate-spin" />
@@ -437,6 +438,7 @@ export function PropertyVerifications() {
                           className="text-red-600 border-red-200 hover:bg-red-50 gap-1"
                           onClick={() => setRejectingId(property.id)}
                           disabled={actionLoading === property.id}
+                          aria-label="Rejeter"
                         >
                           <X className="size-4" />
                         </Button>
@@ -549,6 +551,7 @@ export function PropertyVerifications() {
                             className="bg-green-600 hover:bg-green-700 text-white h-8 w-8 p-0"
                             onClick={(e) => { e.stopPropagation(); handleApprove(property.id) }}
                             disabled={actionLoading === property.id}
+                            aria-label="Approuver"
                           >
                             {actionLoading === property.id ? (
                               <Loader2 className="size-3.5 animate-spin" />
@@ -562,6 +565,7 @@ export function PropertyVerifications() {
                             className="text-red-600 hover:bg-red-50 hover:text-red-700 h-8 w-8 p-0"
                             onClick={(e) => { e.stopPropagation(); setRejectingId(property.id) }}
                             disabled={actionLoading === property.id}
+                            aria-label="Rejeter"
                           >
                             <X className="size-3.5" />
                           </Button>
