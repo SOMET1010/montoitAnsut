@@ -674,6 +674,7 @@ export function FraudAlertsManagement() {
                     size="sm"
                     variant="ghost"
                     className="h-6 w-6 p-0 text-muted-foreground hover:text-red-600"
+                    aria-label="Effacer le suspect sélectionné"
                     onClick={() => setCreateForm((prev) => ({ ...prev, suspectId: '' }))}
                   >
                     <XCircle className="size-3.5" />
