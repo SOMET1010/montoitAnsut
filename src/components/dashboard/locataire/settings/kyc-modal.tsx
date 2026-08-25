@@ -349,6 +349,14 @@ export function KycVerificationModal({
                 {/* Recto zone */}
                 <div
                   onClick={() => kycDocInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      kycDocInputRef.current?.click()
+                    }
+                  }}
                   className={`relative cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-colors ${
                     kycDocImage
                       ? 'border-brand-300 bg-brand-50/30'
@@ -378,6 +386,14 @@ export function KycVerificationModal({
                 {/* Verso zone */}
                 <div
                   onClick={() => kycDocVersoInputRef.current?.click()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      kycDocVersoInputRef.current?.click()
+                    }
+                  }}
                   className={`relative cursor-pointer rounded-xl border-2 border-dashed p-4 text-center transition-colors ${
                     kycDocImageVerso
                       ? 'border-brand-300 bg-brand-50/30'

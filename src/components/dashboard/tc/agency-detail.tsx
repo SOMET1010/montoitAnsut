@@ -262,6 +262,14 @@ export function AgencyDetail() {
               <div
                 className="flex items-center gap-3 p-4 rounded-lg border border-border hover:bg-muted/30 transition-colors cursor-pointer"
                 onClick={() => window.open(doc.url, '_blank')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    window.open(doc.url, '_blank')
+                  }
+                }}
               >
                 <FileText className="size-8 text-brand-500 shrink-0" />
                 <div className="min-w-0">

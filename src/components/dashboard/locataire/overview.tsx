@@ -444,7 +444,15 @@ export function LocataireOverview() {
             <CardContent className="p-4 space-y-2 max-h-64 overflow-y-auto">
               {theData.maintenanceRequests.map((m) => (
                 <div key={m.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                  onClick={() => setDashboardSection('maintenance')}>
+                  onClick={() => setDashboardSection('maintenance')}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setDashboardSection('maintenance')
+                    }
+                  }}>
                   <div className="flex items-center gap-3 min-w-0">
                     <div className={cn('size-8 rounded-full flex items-center justify-center shrink-0',
                       m.status === 'RESOLVED' ? 'bg-green-50' : m.status === 'IN_PROGRESS' ? 'bg-blue-50' : 'bg-amber-50'
@@ -513,7 +521,15 @@ export function LocataireOverview() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {theData.recommendedProperties.slice(0, 4).map((rec) => (
                   <div key={rec.id} className="flex gap-3 p-3 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
-                    onClick={() => { setSelectedItemId(rec.id); setDashboardSection('search-properties') }}>
+                    onClick={() => { setSelectedItemId(rec.id); setDashboardSection('search-properties') }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setSelectedItemId(rec.id); setDashboardSection('search-properties')
+                      }
+                    }}>
                     <div className="size-16 rounded-lg bg-muted overflow-hidden shrink-0">
                       {rec.images?.[0]?.url ? (
                         <img src={rec.images[0].url} alt="" className="size-full object-cover" />

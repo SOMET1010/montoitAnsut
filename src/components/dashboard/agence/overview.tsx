@@ -443,7 +443,15 @@ export function AgenceOverview() {
                   { label: 'Suspendues', count: data.properties.filter(p => p.status !== 'ACTIVE' && p.status !== 'RENTED').length, color: 'bg-neutral-50 text-neutral-600 border-neutral-200' },
                 ].map((cat) => (
                   <div key={cat.label} className={`flex flex-col items-center p-3 rounded-lg border ${cat.color} cursor-pointer hover:shadow-sm transition-shadow`}
-                    onClick={() => setDashboardSection('portfolio')}>
+                    onClick={() => setDashboardSection('portfolio')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('portfolio')
+                      }
+                    }}>
                     <p className="text-lg font-bold">{cat.count}</p>
                     <p className="text-[10px] font-medium">{cat.label}</p>
                   </div>
@@ -455,7 +463,15 @@ export function AgenceOverview() {
               ) : (
                 data.properties.slice(0, 4).map((p) => (
                   <div key={p.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => setDashboardSection('portfolio')}>
+                    onClick={() => setDashboardSection('portfolio')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('portfolio')
+                      }
+                    }}>
                     <div className="flex items-center gap-3 min-w-0">
                       {p.images?.[0] ? (
                         <img src={p.images[0].url} alt="" className="size-10 rounded-lg object-cover" />
@@ -517,7 +533,15 @@ export function AgenceOverview() {
               ) : (
                 data.clientDemands.map((d) => (
                   <div key={d.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => setDashboardSection('candidatures')}>
+                    onClick={() => setDashboardSection('candidatures')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('candidatures')
+                      }
+                    }}>
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="size-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">
                         <User className="size-4 text-amber-600" />

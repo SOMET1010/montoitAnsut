@@ -696,6 +696,14 @@ export function PropertyVerifyDetail() {
                       key={report.id}
                       className="flex items-center justify-between gap-2 p-2 rounded-lg border border-border hover:bg-muted/30 transition-colors cursor-pointer"
                       onClick={() => { setDetailReport(report); setDetailOpen(true) }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setDetailReport(report); setDetailOpen(true)
+                        }
+                      }}
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">

@@ -286,7 +286,15 @@ export function AgenceCommunication() {
           <CardContent className="grid sm:grid-cols-2 gap-3">
             {messageTemplates.map((t, i) => (
               <div key={i} className="p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                onClick={() => { setNewMessage(t.content); toast.info('Modèle copié') }}>
+                onClick={() => { setNewMessage(t.content); toast.info('Modèle copié') }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    setNewMessage(t.content); toast.info('Modèle copié')
+                  }
+                }}>
                 <p className="text-sm font-medium text-foreground">{t.label}</p>
                 <p className="text-xs text-muted-foreground mt-1">{t.content}</p>
               </div>

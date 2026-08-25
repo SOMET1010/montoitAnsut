@@ -1109,10 +1109,19 @@ export default function PropertyMapLeaflet({ properties, onPropertyClick, userLo
                 {clusterProperties.map((property) => (
                   <div
                     key={property.id}
+                    role="button"
+                    tabIndex={0}
                     className="flex items-center gap-3 p-3 hover:bg-muted/60 cursor-pointer transition-colors group"
                     onClick={() => {
                       if (onPropertyClick) onPropertyClick(property)
                       setClusterProperties([])
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        if (onPropertyClick) onPropertyClick(property)
+                        setClusterProperties([])
+                      }
                     }}
                   >
                     {/* Thumbnail */}

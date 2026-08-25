@@ -284,6 +284,14 @@ export function AgencyValidations({ showHeaderAndStats = true }: { showHeaderAnd
                 <div
                   className="flex items-center gap-3 p-3 rounded-lg bg-muted mb-3 cursor-pointer hover:bg-muted/80 transition-colors"
                   onClick={() => openPreview(doc)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      openPreview(doc)
+                    }
+                  }}
                 >
                   <FileText className="size-5 text-muted-foreground" />
                   <div>

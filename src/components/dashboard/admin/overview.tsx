@@ -471,7 +471,15 @@ export function AdminOverview() {
               ) : (
                 data.moderationQueue.slice(0, 5).map((item) => (
                   <div key={item.id} className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent/50 transition-colors cursor-pointer"
-                    onClick={() => setDashboardSection('moderation')}>
+                    onClick={() => setDashboardSection('moderation')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('moderation')
+                      }
+                    }}>
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="size-8 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
                         <Building2 className="size-4 text-orange-600" />

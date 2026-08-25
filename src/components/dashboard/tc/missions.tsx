@@ -736,6 +736,16 @@ export function MissionsManagement() {
                         setNewPhotoUrl('')
                         setDetailDialog({ open: true, mission: m })
                       }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setFeedbackValue(m.feedback || '')
+                          setNewPhotoUrl('')
+                          setDetailDialog({ open: true, mission: m })
+                        }
+                      }}
                     >
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <div className="flex items-center gap-1.5">

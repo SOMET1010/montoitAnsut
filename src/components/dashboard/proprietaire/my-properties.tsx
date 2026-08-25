@@ -250,6 +250,14 @@ export function MyProperties() {
         <div
           className="flex items-center gap-3 sm:gap-4 cursor-pointer rounded-lg hover:opacity-80 transition-opacity"
           onClick={() => handleResumeDraft(p.id)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              handleResumeDraft(p.id)
+            }
+          }}
         >
           {/* Thumbnail */}
           <div className="shrink-0">

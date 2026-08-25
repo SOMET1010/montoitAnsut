@@ -206,6 +206,15 @@ export function Favorites() {
                   <div
                     className="relative h-40 overflow-hidden cursor-pointer"
                     onClick={() => handleViewProperty(p.id)}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Voir le bien"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        handleViewProperty(p.id)
+                      }
+                    }}
                   >
                     {image ? (
                       <img

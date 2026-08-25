@@ -392,6 +392,14 @@ export function DossierValidations({ defaultFilter, onFilterConsumed }: { defaul
                     hasDetail && 'cursor-pointer hover:bg-muted/30'
                   )}
                   onClick={() => hasDetail && handleViewDetail(item)}
+                  role={hasDetail ? 'button' : undefined}
+                  tabIndex={hasDetail ? 0 : undefined}
+                  onKeyDown={(e) => {
+                    if (hasDetail && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault()
+                      handleViewDetail(item)
+                    }
+                  }}
                 >
                   <div className={cn('flex size-9 items-center justify-center rounded-lg shrink-0', cat.bg)}>
                     <Icon className={cn('size-4', cat.color)} />

@@ -1023,7 +1023,16 @@ export function AddProperty({ editId, onSuccess, onCancel }: AddPropertyProps) {
             </CardHeader>
             <CardContent className="space-y-3">
               {!videoFile && !existingVideo ? (
-                <div onClick={() => videoInputRef.current?.click()} className="border-2 border-dashed border-border rounded-xl p-4 sm:p-6 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50/20 transition-colors">
+                <div onClick={() => videoInputRef.current?.click()} className="border-2 border-dashed border-border rounded-xl p-4 sm:p-6 text-center cursor-pointer hover:border-brand-400 hover:bg-brand-50/20 transition-colors"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      videoInputRef.current?.click()
+                    }
+                  }}
+                >
                   <Video className="size-6 sm:size-8 text-muted-foreground mx-auto mb-2" />
                   <p className="text-xs sm:text-sm font-medium text-foreground">Télécharger une vidéo 3D</p>
                   <p className="text-[10px] sm:text-xs text-muted-foreground mt-1">MP4, MOV, WEBM — Max 50 Mo</p>

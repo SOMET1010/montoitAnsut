@@ -650,6 +650,14 @@ export function TcOverview() {
                     key={mission.id}
                     className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent cursor-pointer transition-colors"
                     onClick={() => setDashboardSection('missions')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('missions')
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="size-8 rounded-full bg-brand-50 flex items-center justify-center shrink-0">
@@ -700,6 +708,14 @@ export function TcOverview() {
                     key={dispute.id}
                     className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent cursor-pointer transition-colors"
                     onClick={() => setDashboardSection('litiges')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('litiges')
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className={cn(
@@ -832,6 +848,14 @@ export function TcOverview() {
                     key={rf.id}
                     className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-accent cursor-pointer transition-colors"
                     onClick={() => setDashboardSection('dossier-validations')}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setDashboardSection('dossier-validations')
+                      }
+                    }}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="size-8 rounded-full bg-amber-50 flex items-center justify-center shrink-0">

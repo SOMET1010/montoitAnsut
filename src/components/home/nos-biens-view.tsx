@@ -722,6 +722,14 @@ function MapListItem({ property, onClick, isFavorite, toggleFavorite, distance }
     <div
       className="group bg-card rounded-lg border border-border overflow-hidden shadow-sm hover:shadow-md hover:border-brand-200 transition-all cursor-pointer"
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onClick()
+        }
+      }}
     >
       <div className="flex gap-3 p-2.5">
         {/* Image */}
