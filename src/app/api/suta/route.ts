@@ -130,7 +130,7 @@ const conversationTimestamps = new Map<string, number>()
 
 setInterval(() => {
   const now = Date.now()
-  for (const [sessionId, timestamp] of conversationTimestamps) {
+  for (const [scopedSessionId, timestamp] of conversationTimestamps) {
     if (now - timestamp > MAX_CONVERSATION_AGE) {
       conversations.delete(scopedSessionId)
       conversationTimestamps.delete(scopedSessionId)
@@ -223,8 +223,8 @@ export async function DELETE(req: NextRequest) {
     const scopedSessionId = `${auth.userId}:${sessionId}`
 
     if (sessionId) {
-      conversations.delete(sessionId)
-      conversationTimestamps.delete(sessionId)
+      conversations.delete(scopedSessionId)
+      conversationTimestamps.delete(scopedSessionId)
     }
 
     return NextResponse.json({ success: true })
