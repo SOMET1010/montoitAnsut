@@ -19,6 +19,7 @@ export async function searchActiveProperties(
   let query = client.from('properties')
     .select('id,title,commune,city,price,type,bedrooms,is_furnished')
     .eq('status', 'ACTIVE')
+    .eq('rental_status', 'AVAILABLE')
   if (filters.commune) query = query.ilike('commune', filters.commune)
   if (filters.type) query = query.eq('type', filters.type)
   if (filters.prix_max_fcfa !== undefined) query = query.lte('price', filters.prix_max_fcfa)
