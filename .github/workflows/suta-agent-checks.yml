@@ -1,0 +1,25 @@
+name: SUTA Agent Checks
+on:
+  pull_request:
+    paths:
+      - 'src/lib/agent/**'
+      - 'src/app/api/agent/**'
+      - 'src/app/api/suta/**'
+      - '.github/workflows/suta-agent-checks.yml'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+      - name: Unit tests
+        run: bunx vitest run src/lib/agent/property-search.test.ts
+      - name: TypeScript
+        run: bunx tsc --noEmit

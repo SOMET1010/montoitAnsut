@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { resolveRequestUser } from '@/lib/auth/request-user'
 import { checkRateLimit } from '@/lib/rate-limiter'
+import { getSupabaseAdminClient } from '@/lib/supabase/admin'
+import { propertySearchSchema, searchActiveProperties } from '@/lib/agent/property-search'
 
 const SUTA_SYSTEM_PROMPT = `Tu es SUTA, l'assistant IA de la plateforme Mon Toit (ANSUT), la plateforme de location immobilière en Côte d'Ivoire. Tu es chaleureux, professionnel et toujours prêt à aider.
 
@@ -58,7 +60,7 @@ Tu réponds aux questions concernant les fonctionnalités de la plateforme Mon T
 - Validation des documents de propriété
 
 **Informations générales sur Mon Toit :**
-- Mon Toit est une plateforme ANSUT (Agence Nationale de l'Urbanisme et du Territoire) en Côte d'Ivoire
+- Mon Toit est une plateforme ANSUT (Agence Nationale du Service Universel des Télécommunications/TIC) en Côte d'Ivoire
 - Couvre les communes d'Abidjan : Cocody, Plateau, Yopougon, Marcory, Treichville, Abobo, etc.
 - Types de biens : Studio, Appartement, Maison, Duplex, Villa, Penthouse, Chambre
 - Processus : Inscription → Vérification → Recherche/Publication → Candidature → Bail → Paiement
@@ -77,14 +79,14 @@ Règles importantes :
 // ── Azure OpenAI client ──────────────────────────────────────────────────────
 
 interface AzureChoice {
-  message: { content: string }
+  message: { content: string | null; tool_calls?: Array<{ id: string; function: { name: string; arguments: string } }> }
 }
 
 interface AzureResponse {
   choices: AzureChoice[]
 }
 
-async function callAzureOpenAI(messages: Array<{ role: string; content: string }>): Promise<AzureResponse> {
+async function callAzureOpenAI(messages: Array<{ role: string; content: string }>, allowTools = false): Promise<AzureResponse> {
   const endpoint = process.env.VITE_AZURE_OPENAI_ENDPOINT
   const apiKey = process.env.VITE_AZURE_OPENAI_API_KEY
   const deployment = process.env.VITE_AZURE_OPENAI_DEPLOYMENT_NAME
@@ -105,7 +107,8 @@ async function callAzureOpenAI(messages: Array<{ role: string; content: string }
     body: JSON.stringify({
       messages,
       max_tokens: 1024,
-      temperature: 0.7,
+      temperature: 0.3,
+      ...(allowTools ? { tools: [{ type: 'function', function: { name: 'rechercher_logements', description: 'Chercher des logements réellement disponibles sur Mon Toit. Uniquement en lecture seule.', parameters: { type: 'object', properties: { commune: { type: 'string' }, type: { type: 'string', enum: ['APPARTEMENT','MAISON','STUDIO','DUPLEX','PENTHOUSE','VILLA'] }, prix_max_fcfa: { type: 'integer' }, chambres_min: { type: 'integer' }, meuble: { type: 'boolean' }, limit: { type: 'integer' } }, additionalProperties: false } } }], tool_choice: 'auto' } : {}),
     }),
   })
 
@@ -127,10 +130,10 @@ const conversationTimestamps = new Map<string, number>()
 
 setInterval(() => {
   const now = Date.now()
-  for (const [sessionId, timestamp] of conversationTimestamps) {
+  for (const [scopedSessionId, timestamp] of conversationTimestamps) {
     if (now - timestamp > MAX_CONVERSATION_AGE) {
-      conversations.delete(sessionId)
-      conversationTimestamps.delete(sessionId)
+      conversations.delete(scopedSessionId)
+      conversationTimestamps.delete(scopedSessionId)
     }
   }
 }, 30 * 60 * 1000)
@@ -156,17 +159,18 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { message, sessionId } = body
 
-    if (!message || typeof message !== 'string') {
+    if (typeof message !== 'string' || !message.trim() || message.length > 2000) {
       return NextResponse.json({ error: 'Message requis' }, { status: 400 })
     }
 
-    if (!sessionId || typeof sessionId !== 'string') {
+    if (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
       return NextResponse.json({ error: 'Session ID requis' }, { status: 400 })
     }
 
     // Get or create conversation history
-    let history = conversations.get(sessionId) || []
-    conversationTimestamps.set(sessionId, Date.now())
+    const scopedSessionId = `${auth.userId}:${sessionId}`
+    let history = conversations.get(scopedSessionId) || []
+    conversationTimestamps.set(scopedSessionId, Date.now())
 
     // Add user message
     history.push({ role: 'user', content: message })
@@ -177,15 +181,27 @@ export async function POST(req: NextRequest) {
     }
 
     const completion = await callAzureOpenAI([
-      { role: 'system', content: SUTA_SYSTEM_PROMPT },
+      { role: 'system', content: SUTA_SYSTEM_PROMPT + '\nSi une recherche de logement est demandée, utilise rechercher_logements. Ne présente jamais des biens inventés.' },
       ...history,
-    ])
+    ], true)
 
-    const aiResponse = completion.choices?.[0]?.message?.content || 'Désolé, je n\'ai pas pu générer une réponse. Veuillez réessayer.'
+    const toolCall = completion.choices?.[0]?.message?.tool_calls?.find(t => t.function.name === 'rechercher_logements')
+    let aiResponse = completion.choices?.[0]?.message?.content || 'Je ne peux pas répondre pour le moment.'
+    if (toolCall) {
+      let argumentsObject: unknown
+      try { argumentsObject = JSON.parse(toolCall.function.arguments) } catch { argumentsObject = null }
+      const parsed = propertySearchSchema.safeParse(argumentsObject)
+      if (!parsed.success) {
+        aiResponse = 'Je n’ai pas compris les critères. Précisez la commune, le budget et le type de logement.'
+      } else {
+        const listings = await searchActiveProperties(parsed.data, getSupabaseAdminClient())
+        aiResponse = listings.length ? 'Voici les annonces actives correspondant à votre recherche :\n' + listings.map(p => `• ${p.title} — ${p.commune || p.city || 'Commune non précisée'} — ${p.priceFcfa} FCFA (réf. ${p.id})`).join('\n') : 'Aucun logement actif ne correspond à ces critères pour le moment.'
+      }
+    }
 
     // Add AI response to history
     history.push({ role: 'assistant', content: aiResponse })
-    conversations.set(sessionId, history)
+    conversations.set(scopedSessionId, history)
 
     return NextResponse.json({
       success: true,
@@ -202,12 +218,18 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
+    const auth = await resolveRequestUser(req)
+    if (!auth.userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     const { searchParams } = new URL(req.url)
     const sessionId = searchParams.get('sessionId')
+    if (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
+      return NextResponse.json({ error: 'Session ID invalide' }, { status: 400 })
+    }
+    const scopedSessionId = `${auth.userId}:${sessionId}`
 
     if (sessionId) {
-      conversations.delete(sessionId)
-      conversationTimestamps.delete(sessionId)
+      conversations.delete(scopedSessionId)
+      conversationTimestamps.delete(scopedSessionId)
     }
 
     return NextResponse.json({ success: true })
