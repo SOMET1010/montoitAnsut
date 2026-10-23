@@ -23,6 +23,7 @@ describe('SUTA read-only property search', () => {
     const result = await searchActiveProperties({ commune: 'Cocody', limit: 2 }, { from })
     expect(from).toHaveBeenCalledWith('properties')
     expect(calls).toContainEqual(['status', 'ACTIVE'])
+    expect(calls).toContainEqual(['rental_status', 'AVAILABLE'])
     expect(query.limit).toHaveBeenCalledWith(2)
     expect(result).toHaveLength(1)
   })
