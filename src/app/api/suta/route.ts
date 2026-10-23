@@ -159,11 +159,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const { message, sessionId } = body
 
-    if (!message || typeof message !== 'string') {
+    if (typeof message !== 'string' || !message.trim() || message.length > 2000) {
       return NextResponse.json({ error: 'Message requis' }, { status: 400 })
     }
 
-    if (!sessionId || typeof sessionId !== 'string') {
+    if (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
       return NextResponse.json({ error: 'Session ID requis' }, { status: 400 })
     }
 
@@ -188,7 +188,9 @@ export async function POST(req: NextRequest) {
     const toolCall = completion.choices?.[0]?.message?.tool_calls?.find(t => t.function.name === 'rechercher_logements')
     let aiResponse = completion.choices?.[0]?.message?.content || 'Je ne peux pas répondre pour le moment.'
     if (toolCall) {
-      const parsed = propertySearchSchema.safeParse(JSON.parse(toolCall.function.arguments))
+      let argumentsObject: unknown
+      try { argumentsObject = JSON.parse(toolCall.function.arguments) } catch { argumentsObject = null }
+      const parsed = propertySearchSchema.safeParse(argumentsObject)
       if (!parsed.success) {
         aiResponse = 'Je n’ai pas compris les critères. Précisez la commune, le budget et le type de logement.'
       } else {
@@ -220,6 +222,9 @@ export async function DELETE(req: NextRequest) {
     if (!auth.userId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 })
     const { searchParams } = new URL(req.url)
     const sessionId = searchParams.get('sessionId')
+    if (typeof sessionId !== 'string' || !/^[a-zA-Z0-9_-]{1,128}$/.test(sessionId)) {
+      return NextResponse.json({ error: 'Session ID invalide' }, { status: 400 })
+    }
     const scopedSessionId = `${auth.userId}:${sessionId}`
 
     if (sessionId) {
